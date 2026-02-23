@@ -518,21 +518,6 @@ class UIManager {
             this.setMode('leaderboard');
             audio.playClick();
         });
-
-        // Leaderboard Manual Injection
-        document.getElementById('btn-manual-inject').addEventListener('click', () => {
-            const name = document.getElementById('manual-name').value.trim() || 'ANONYMOUS';
-            const score = parseInt(document.getElementById('manual-score').value, 10) || 0;
-            const dateStr = document.getElementById('manual-date').value || null;
-
-            this.game.saveScore(name, score, dateStr);
-            document.getElementById('manual-name').value = '';
-            document.getElementById('manual-score').value = '';
-            document.getElementById('manual-date').value = '';
-            this.renderLeaderboard(); // refresh table
-            audio.playClick();
-        });
-
         // High Score Submission
         const submitHighScore = () => {
             const nameInput = document.getElementById('high-score-name');
