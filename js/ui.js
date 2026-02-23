@@ -534,13 +534,13 @@ class UIManager {
         });
 
         // High Score Submission
-        document.getElementById('btn-submit-score').addEventListener('click', () => {
+        const submitHighScore = () => {
             const nameInput = document.getElementById('high-score-name');
-            let name = nameInput.value.trim().toUpperCase();
-            if (!name) name = 'ANONYMOUS';
+            let playerName = nameInput.value.trim().toUpperCase();
+            if (!playerName) playerName = 'ANONYMOUS';
 
             // Final score should be captured from game state
-            this.game.saveScore(name, this.game.score);
+            this.game.saveScore(playerName, this.game.score);
             nameInput.value = '';
 
             // Hide score entry UI and show restart/best buttons
@@ -548,6 +548,11 @@ class UIManager {
             document.getElementById('gameover-buttons').classList.remove('hidden');
 
             audio.playClick();
+        };
+
+        document.getElementById('btn-submit-score').addEventListener('click', submitHighScore);
+        document.getElementById('high-score-name').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') submitHighScore();
         });
 
         // Popup Buttons
@@ -762,6 +767,11 @@ class UIManager {
         if (this.game.mode !== mode) {
             this.cascade.clearStages();
             this.stagesList.innerHTML = '';
+        }
+
+        // Halt interval ticking to stop sound leaks
+        if (this.game.timerInterval) {
+            clearInterval(this.game.timerInterval);
         }
 
         this.game.mode = mode;
