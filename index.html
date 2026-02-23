@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChebyGame - Retro Filter Design</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div id="game-container">
+        <header>
+            <h1>CHEBYGAME</h1>
+            <div id="header-right">
+                <div id="sensitivity-control">
+                    <label for="scroll-sensitivity">🖱 Sensitivity:</label>
+                    <input type="range" id="scroll-sensitivity" min="0.1" max="5" step="0.1" value="3">
+                    <span id="sensitivity-value">3.0×</span>
+                </div>
+                <div id="mode-selector">
+                    <button id="btn-sandbox" class="active">Sandbox</button>
+                    <button id="btn-challenge">Challenge</button>
+                    <button id="btn-leaderboard">Leaderboard</button>
+                </div>
+            </div>
+        </header>
+
+        <div id="main-interface">
+            <div id="plot-area">
+                <canvas id="frequency-response"></canvas>
+                <div id="plot-overlay"></div>
+            </div>
+
+            <div id="pzmap-area">
+                <canvas id="pzmap-canvas"></canvas>
+            </div>
+
+            <aside id="controls-area">
+                <div id="challenge-hud" class="hidden">
+                    <div class="hud-item">Time: <span id="timer" class="timer-green">60</span>s</div>
+                    <div class="hud-item">Score: <span id="score">0</span></div>
+                    <div class="hud-item">Round: <span id="round">1</span></div>
+                </div>
+
+                <div id="filter-controls">
+                    <h2>Filter Stages</h2>
+
+                    <div class="stage-card" id="global-gain-card" style="border-color: var(--accent-cyan);">
+                        <div class="stage-header"
+                            style="background: var(--bg-dark); color: var(--accent-cyan); cursor: default;">Overall
+                            System Gain</div>
+                        <div class="param-row">
+                            <span>Gain dB</span>
+                            <input type="range" class="param-slider" id="global-gain-slider" min="-46" max="3" value="0"
+                                step="0.5">
+                            <span class="param-value" id="global-gain-value" style="cursor: ns-resize;"
+                                title="Scroll to adjust">0.0</span>
+                        </div>
+                    </div>
+
+                    <div id="stages-list">
+                        <!-- Dynamic list of filter stages -->
+                    </div>
+                    <div class="add-buttons">
+                        <button id="add-pole">+ 1st Order (Pole)</button>
+                        <button id="add-biquad">+ 2nd Order (Biquad)</button>
+                    </div>
+                </div>
+
+                <div id="global-controls">
+                    <button id="play-all">▶ Play All</button>
+                    <button id="pause-all">⏸ Pause All</button>
+                    <button id="reset-all">↺ Reset</button>
+                    <button id="best-solution">★ Best Solution</button>
+
+                    <button id="hover-stage-toggle">🔍 View Hovered Stage</button>
+                    <!-- Unlimited Time Toggle globally accessible, logic applies to Challenge Mode -->
+                    <button id="unlimited-time">⏳ Unlimited Time</button>
+                </div>
+            </aside>
+
+            <!-- Leaderboard Overlay (Hidden by default) -->
+            <div id="leaderboard-area" class="hidden">
+                <h2 class="leaderboard-title">Top Constructors</h2>
+
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Name</th>
+                            <th>Score</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Rows injected by UI Manager -->
+                    </tbody>
+                </table>
+
+                <div id="leaderboard-manual-entry">
+                    <h3>Manual High Score Injection (Test)</h3>
+                    <div class="manual-input-group">
+                        <input type="text" id="manual-name" placeholder="Name" maxlength="15">
+                        <input type="number" id="manual-score" placeholder="Score" min="0">
+                        <input type="date" id="manual-date">
+                        <button id="btn-manual-inject">Inject</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popups -->
+        <div id="popup-overlay" class="hidden">
+            <div id="victory-popup" class="popup-box hidden">
+                <h2 class="popup-title">LEVEL PASSED!</h2>
+                <div class="popup-message" id="victory-message">Next stage starting in...</div>
+                <div class="popup-countdown" id="victory-countdown">3</div>
+            </div>
+
+            <div id="gameover-popup" class="popup-box hidden">
+                <h2 class="popup-title">SIMULATION FAILED</h2>
+                <p id="gameover-message" class="popup-message">Final Score: 0</p>
+
+                <div id="high-score-entry" class="hidden">
+                    <p class="new-record-text">NEW RECORD DETECTED!</p>
+                    <input type="text" id="high-score-name" placeholder="ENTER NAME" maxlength="12">
+                    <button id="btn-submit-score">SAVE</button>
+                </div>
+
+                <div class="popup-buttons" id="gameover-buttons">
+                    <button id="btn-popup-restart">RESTART</button>
+                    <button id="btn-popup-best">SEE BEST SOLUTION</button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div id="message-area"></div>
+            <div id="credits">Made by Nicolas Beade, Javier Petrucci &amp; Pafnuti Chebyshov</div>
+        </footer>
+    </div>
+
+    <script src="js/dsp.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/audio.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>
