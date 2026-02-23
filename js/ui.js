@@ -588,7 +588,6 @@ class UIManager {
 
         document.getElementById('btn-popup-restart').addEventListener('click', () => {
             this.overlay.classList.remove('hidden', 'viewing-best');
-            this.overlay.classList.add('hidden');
             this.gameoverPopup.classList.add('hidden');
 
             const globalGainSlider = document.getElementById('global-gain-slider');
@@ -596,8 +595,18 @@ class UIManager {
 
             this.cascade.clearStages();
             this.stagesList.innerHTML = '';
-            this.setMode('sandbox'); // Reset internal state
-            this.setMode('challenge');
+
+            // Show challenge start screen rather than jumping straight in
+            this.game.startChallenge();
+            document.getElementById('challenge-start-popup').classList.remove('hidden');
+            audio.playClick();
+        });
+
+        // Challenge Start Button
+        document.getElementById('btn-start-challenge').addEventListener('click', () => {
+            document.getElementById('challenge-start-popup').classList.add('hidden');
+            this.overlay.classList.add('hidden');
+            this.game.startRound();
             audio.playClick();
         });
 
@@ -788,6 +797,8 @@ class UIManager {
 
         if (mode === 'challenge') {
             this.game.startChallenge();
+            this.overlay.classList.remove('hidden');
+            document.getElementById('challenge-start-popup').classList.remove('hidden');
             document.getElementById('message-area').textContent =
                 'Challenge started! Match the target filter response before time runs out.';
         } else if (mode === 'leaderboard') {

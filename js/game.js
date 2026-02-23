@@ -91,7 +91,12 @@ class GameManager {
         this.score = 0;
         this.isGameOver = false;
         this.isPaused = false;
-        this.startRound();
+
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+        }
+
+        // Wait for explicit this.startRound() call from UI
     }
 
     startRound() {
@@ -238,7 +243,10 @@ class GameManager {
         const data = localStorage.getItem('neandertool_leaderboard');
         if (data) {
             try {
-                return JSON.parse(data);
+                const arr = JSON.parse(data);
+                // Ensure scores are guaranteed Ints
+                arr.forEach(e => { e.score = parseInt(e.score, 10) || 0; });
+                return arr;
             } catch (e) {
                 return [];
             }

@@ -591,6 +591,13 @@ button.active:hover {
     margin-bottom: 20px;
 }
 
+.popup-message-start {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    color: var(--accent-cyan);
+}
+
 .popup-countdown {
     font-size: 48px;
     color: var(--accent-cyan);
