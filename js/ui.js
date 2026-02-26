@@ -447,14 +447,23 @@ class UIManager {
         }
 
         const unlimitedTime = document.getElementById('unlimited-time');
-        if (unlimitedTime) {
-            unlimitedTime.addEventListener('click', () => {
-                unlimitedTime.classList.toggle('active');
-                unlimitedTime.textContent = unlimitedTime.classList.contains('active') ? '⏳ Time: Unlimited' : '⏳ Unlimited Time';
-                this.game.updateHUD();
+        document.getElementById('btn-skip-level').addEventListener('click', () => {
+            if (this.game.mode === 'challenge' && this.game.subMode === 'zen') {
+                this.game.skipLevel(this.cascade);
+                this.cascade.clearStages();
+                this.stagesList.innerHTML = '';
+                this.render();
                 audio.playClick();
-            });
-        }
+            }
+        });
+
+        document.getElementById('btn-end-game').addEventListener('click', () => {
+            if (this.game.mode === 'challenge') {
+                this.game.endGame();
+                this.showGameOver();
+                audio.playClick();
+            }
+        });
 
         document.getElementById('add-pole').addEventListener('click', () => {
             const stage = this.cascade.addStage(new FirstOrderLowPass(1.0));
@@ -587,10 +596,27 @@ class UIManager {
             audio.playClick();
         });
 
-        // Challenge Start Button
-        document.getElementById('btn-start-challenge').addEventListener('click', () => {
+        // Challenge Start Buttons
+        document.getElementById('btn-start-zen').addEventListener('click', () => {
             document.getElementById('challenge-start-popup').classList.add('hidden');
             this.overlay.classList.add('hidden');
+
+            // Show Skip button during Zen
+            document.getElementById('btn-skip-level').style.display = '';
+
+            this.game.startChallenge('zen');
+            this.game.startRound();
+            audio.playClick();
+        });
+
+        document.getElementById('btn-start-hardcore').addEventListener('click', () => {
+            document.getElementById('challenge-start-popup').classList.add('hidden');
+            this.overlay.classList.add('hidden');
+
+            // Hide Skip button during Hardcore
+            document.getElementById('btn-skip-level').style.display = 'none';
+
+            this.game.startChallenge('hardcore');
             this.game.startRound();
             audio.playClick();
         });
@@ -781,6 +807,8 @@ class UIManager {
         container.classList.toggle('leaderboard-mode', mode === 'leaderboard');
 
         if (mode === 'challenge') {
+            document.getElementById('btn-skip-level').style.display = 'none'; // Re-eval'd after submode choice
+
             this.game.startChallenge();
             this.overlay.classList.remove('hidden');
             document.getElementById('challenge-start-popup').classList.remove('hidden');

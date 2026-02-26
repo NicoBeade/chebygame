@@ -85,8 +85,9 @@ class GameManager {
     /**
      * Start a new challenge round
      */
-    startChallenge() {
+    startChallenge(subMode = 'hardcore') {
         this.mode = 'challenge';
+        this.subMode = subMode;
         this.round = 1;
         this.score = 0;
         this.isGameOver = false;
@@ -106,12 +107,11 @@ class GameManager {
 
         // Start timer
         if (this.timerInterval) clearInterval(this.timerInterval);
-        this.timerInterval = setInterval(() => {
-            if (this.isPaused) return; // Freeze timer during popups
 
-            const isUnlimited = document.getElementById('unlimited-time').classList.contains('active');
+        if (this.subMode === 'hardcore') {
+            this.timerInterval = setInterval(() => {
+                if (this.isPaused) return; // Freeze timer during popups
 
-            if (!isUnlimited) {
                 this.timeRemaining--;
 
                 // Play tick — urgency increases as time decreases (0 when full, 1 when empty)
@@ -122,10 +122,21 @@ class GameManager {
                     clearInterval(this.timerInterval);
                     this.isGameOver = true;
                 }
-            }
 
-            this.updateHUD();
-        }, 1000);
+                this.updateHUD();
+            }, 1000);
+        }
+    }
+
+    skipLevel() {
+        if (this.subMode !== 'zen') return;
+        this.startRound();
+    }
+
+    endGame() {
+        clearInterval(this.timerInterval);
+        this.isGameOver = true;
+        this.isPaused = true;
     }
 
     /**
@@ -135,10 +146,9 @@ class GameManager {
         clearInterval(this.timerInterval);
         this.isPaused = true;
 
-        const isUnlimited = document.getElementById('unlimited-time').classList.contains('active');
         let roundScore = 0;
 
-        if (!isUnlimited) {
+        if (this.subMode === 'hardcore') {
             // Score based on time and stages used
             const timeBonus = this.timeRemaining * 10;
             const stageCount = cascade.stages.length;
@@ -182,9 +192,8 @@ class GameManager {
 
     updateHUD() {
         const timerEl = document.getElementById('timer');
-        const isUnlimited = document.getElementById('unlimited-time').classList.contains('active');
 
-        if (isUnlimited) {
+        if (this.subMode === 'zen') {
             timerEl.textContent = '∞';
             timerEl.classList.remove('timer-yellow', 'timer-red');
             timerEl.classList.add('timer-green');

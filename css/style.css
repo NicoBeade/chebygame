@@ -488,13 +488,15 @@ button.active:hover {
 #game-container:not(.challenge-mode) #reset-all,
 #game-container:not(.challenge-mode) #best-solution,
 #game-container:not(.challenge-mode) #hover-stage-toggle,
-#game-container:not(.challenge-mode) #unlimited-time {
+#game-container:not(.challenge-mode) #btn-skip-level,
+#game-container:not(.challenge-mode) #btn-end-game {
     display: none;
 }
 
 #best-solution,
 #hover-stage-toggle,
-#unlimited-time {
+#btn-skip-level,
+#btn-end-game {
     grid-column: span 2;
     border-color: var(--accent-purple);
     color: var(--accent-purple);
@@ -502,14 +504,14 @@ button.active:hover {
 
 #best-solution:hover,
 #hover-stage-toggle:hover,
-#unlimited-time:hover {
+#btn-skip-level:hover,
+#btn-end-game:hover {
     background: var(--accent-purple);
     color: var(--font-white);
 }
 
 #best-solution.active,
-#hover-stage-toggle.active,
-#unlimited-time.active {
+#hover-stage-toggle.active {
     background: var(--accent-purple);
     color: var(--font-white);
     border-color: var(--accent-purple);
