@@ -481,11 +481,11 @@ button.active:hover {
 }
 
 .challenge-mode #play-all,
-.challenge-mode #pause-all,
-.challenge-mode #reset-all {
+.challenge-mode #pause-all {
     display: none;
 }
 
+#game-container:not(.challenge-mode) #reset-all,
 #game-container:not(.challenge-mode) #best-solution,
 #game-container:not(.challenge-mode) #hover-stage-toggle,
 #game-container:not(.challenge-mode) #unlimited-time {
