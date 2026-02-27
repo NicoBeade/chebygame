@@ -179,6 +179,11 @@ class PlotManager {
             ctx.lineTo(this.freqToX(pMax), this.dbToY(pDbMin));
             ctx.stroke();
             ctx.setLineDash([]);
+
+            // Label the passband end frequency
+            ctx.fillStyle = '#00ff64';
+            ctx.font = '10px monospace';
+            ctx.fillText(pMax.toFixed(0) + ' kHz', this.freqToX(pMax) - 35, this.height - 15);
         }
 
         // Stopband constraint
@@ -203,7 +208,7 @@ class PlotManager {
             // Label the stopband start frequency
             ctx.fillStyle = '#ff9800';
             ctx.font = '10px monospace';
-            ctx.fillText(sMin.toFixed(2), this.freqToX(sMin) + 4, this.height - 15);
+            ctx.fillText(sMin.toFixed(2) + ' kHz', this.freqToX(sMin) + 4, this.height - 15);
         }
     }
 
