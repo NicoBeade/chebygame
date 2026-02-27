@@ -28,8 +28,8 @@ class GameManager {
     generateConstraints() {
         const minOrder = Math.floor(this.baseMinOrder + (this.round - 1) * this.orderIncreasePerRound);
 
-        // Passband frequency is now exactly 1.0 (normalized)
-        const passbandFreq = 1.0;
+        // Passband frequency is a random multiple of 1kHz up to 10kHz
+        const passbandFreq = Math.floor(Math.random() * 10) + 1;
 
         // Stopband starts 1.5 to 3.0 in normalized space
         const gap = 1.5 + Math.random() * 1.5;
