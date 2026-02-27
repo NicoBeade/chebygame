@@ -59,7 +59,9 @@
                         </div>
                     </div>
 
-                    <!-- Dynamic list of filter stages has been moved below main-interface -->
+                    <div id="stages-list">
+                        <!-- Dynamic list of filter stages -->
+                    </div>
                     <div class="add-buttons">
                         <button id="add-pole">+ 1st Order (Pole)</button>
                         <button id="add-biquad">+ 2nd Order (Biquad)</button>
@@ -98,56 +100,49 @@
                 </table>
             </div>
         </div>
-    </div>
 
-    <div id="stages-wrapper">
-        <div id="stages-list">
-            <!-- Dynamic list of filter stages -->
-        </div>
-    </div>
-
-    <!-- Popups -->
-    <div id="popup-overlay" class="hidden">
-        <div id="challenge-start-popup" class="popup-box hidden">
-            <h2 class="popup-title">CHALLENGE MODE</h2>
-            <div class="popup-message popup-message-start">
-                Build a filter satisfying the target constraints.<br>
-                Keep your stage count low and work fast!<br><br>
-                Choose your mode:
-            </div>
-            <div class="popup-buttons">
-                <button id="btn-start-zen">Zen</button>
-                <button id="btn-start-hardcore">Hardcore</button>
-            </div>
-        </div>
-
-        <div id="victory-popup" class="popup-box hidden">
-            <h2 class="popup-title">LEVEL PASSED!</h2>
-            <div class="popup-message" id="victory-message">Next stage starting in...</div>
-            <div class="popup-countdown" id="victory-countdown">3</div>
-        </div>
-
-        <div id="gameover-popup" class="popup-box hidden">
-            <h2 class="popup-title">SIMULATION FAILED</h2>
-            <p id="gameover-message" class="popup-message">Final Score: 0</p>
-
-            <div id="high-score-entry" class="hidden">
-                <p class="new-record-text">NEW RECORD DETECTED!</p>
-                <input type="text" id="high-score-name" placeholder="ENTER NAME" maxlength="12">
-                <button id="btn-submit-score">SAVE</button>
+        <!-- Popups -->
+        <div id="popup-overlay" class="hidden">
+            <div id="challenge-start-popup" class="popup-box hidden">
+                <h2 class="popup-title">CHALLENGE MODE</h2>
+                <div class="popup-message popup-message-start">
+                    Build a filter satisfying the target constraints.<br>
+                    Keep your stage count low and work fast!<br><br>
+                    Choose your mode:
+                </div>
+                <div class="popup-buttons">
+                    <button id="btn-start-zen">Zen</button>
+                    <button id="btn-start-hardcore">Hardcore</button>
+                </div>
             </div>
 
-            <div class="popup-buttons" id="gameover-buttons">
-                <button id="btn-popup-restart">RESTART</button>
-                <button id="btn-popup-best">SEE BEST SOLUTION</button>
+            <div id="victory-popup" class="popup-box hidden">
+                <h2 class="popup-title">LEVEL PASSED!</h2>
+                <div class="popup-message" id="victory-message">Next stage starting in...</div>
+                <div class="popup-countdown" id="victory-countdown">3</div>
+            </div>
+
+            <div id="gameover-popup" class="popup-box hidden">
+                <h2 class="popup-title">SIMULATION FAILED</h2>
+                <p id="gameover-message" class="popup-message">Final Score: 0</p>
+
+                <div id="high-score-entry" class="hidden">
+                    <p class="new-record-text">NEW RECORD DETECTED!</p>
+                    <input type="text" id="high-score-name" placeholder="ENTER NAME" maxlength="12">
+                    <button id="btn-submit-score">SAVE</button>
+                </div>
+
+                <div class="popup-buttons" id="gameover-buttons">
+                    <button id="btn-popup-restart">RESTART</button>
+                    <button id="btn-popup-best">SEE BEST SOLUTION</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <footer>
-        <div id="message-area"></div>
-        <div id="credits">Made by Nicolas Beade, Javier Petrucci &amp; Pafnuti Chebyshov</div>
-    </footer>
+        <footer>
+            <div id="message-area"></div>
+            <div id="credits">Made by Nicolas Beade, Javier Petrucci &amp; Pafnuti Chebyshov</div>
+        </footer>
     </div>
 
     <script src="js/dsp.js"></script>
