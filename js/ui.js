@@ -470,13 +470,23 @@ class UIManager {
             }
         });
 
+        const MAX_STAGES = 8;
+
         document.getElementById('add-pole').addEventListener('click', () => {
+            if (this.cascade.stages.length >= MAX_STAGES) {
+                alert(`Maximum limit of ${MAX_STAGES} stages reached.`);
+                return;
+            }
             const stage = this.cascade.addStage(new FirstOrderLowPass(1.0));
             this.renderStageCard(stage);
             audio.playClick();
         });
 
         document.getElementById('add-biquad').addEventListener('click', () => {
+            if (this.cascade.stages.length >= MAX_STAGES) {
+                alert(`Maximum limit of ${MAX_STAGES} stages reached.`);
+                return;
+            }
             const stage = this.cascade.addStage(new SecondOrderLowPass(1.0, 0.707));
             this.renderStageCard(stage);
             audio.playClick();
@@ -653,12 +663,17 @@ class UIManager {
 
         card.appendChild(header);
 
-        // Parameter controls
+        // Parameter controls inline grouping
+        const paramsContainer = document.createElement('div');
+        paramsContainer.className = 'stage-params';
+
         for (const param of stage.getParameters()) {
             const isW0 = param === stage.w0;
             const paramControl = this.createParameterControl(param, stage, isW0);
-            card.appendChild(paramControl);
+            paramsContainer.appendChild(paramControl);
         }
+
+        card.appendChild(paramsContainer);
 
         this.stagesList.appendChild(card);
 
