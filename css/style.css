@@ -485,6 +485,7 @@ button.active:hover {
 }
 
 .challenge-mode .param-slider,
+.challenge-mode .play-btn,
 .challenge-mode .range-controls {
     display: none;
 }

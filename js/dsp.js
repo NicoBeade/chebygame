@@ -18,9 +18,9 @@ class AnimatedParameter {
 
     autoRange() {
         let tolerance = 0.2; // default 20%
-        const tolInput = document.getElementById('slider-tolerance');
-        if (tolInput) {
-            tolerance = parseFloat(tolInput.value) / 100;
+        const tolSpan = document.getElementById('slider-tolerance-value');
+        if (tolSpan) {
+            tolerance = parseFloat(tolSpan.textContent) / 100;
         }
 
         // Enforce the sliders to cleanly frame ± tolerance around the nominal value.

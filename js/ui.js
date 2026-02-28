@@ -452,9 +452,20 @@ class UIManager {
         }
 
         // Tolerance Control
-        const tolInput = document.getElementById('slider-tolerance');
-        if (tolInput) {
-            tolInput.addEventListener('change', () => {
+        const tolValue = document.getElementById('slider-tolerance-value');
+        if (tolValue) {
+            tolValue.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const direction = e.deltaY > 0 ? -1 : 1;
+                const step = 5; // 5% per tick
+
+                let currentVal = parseInt(tolValue.textContent, 10);
+                let newValue = Math.max(1, Math.min(100, currentVal + direction * step));
+
+                tolValue.textContent = newValue;
+                audio.playClick();
+
                 for (const stage of this.cascade.stages) {
                     if (stage.getParameters) {
                         for (const param of stage.getParameters()) {
@@ -466,7 +477,7 @@ class UIManager {
                         }
                     }
                 }
-            });
+            }, { passive: false });
         }
 
         const unlimitedTime = document.getElementById('unlimited-time');
