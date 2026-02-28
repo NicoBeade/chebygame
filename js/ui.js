@@ -717,9 +717,7 @@ class UIManager {
                 <input type="range" class="param-slider"
                        min="${param.min}" max="${param.max}"
                        value="${param.value}" step="${isW0 ? 0.01 : 0.01}">
-            </div>
-            <div class="range-controls">
-                <button class="play-btn" style="width: 100%; border-radius: 4px; margin-top: 4px;">${param.isAnimating ? '⏸ Animating' : '▶ Animate ±20%'}</button>
+                <button class="play-btn" title="Animate ±20%">${param.isAnimating ? '⏸' : '▶'}</button>
             </div>
         `;
 
@@ -758,10 +756,10 @@ class UIManager {
         playBtn.addEventListener('click', () => {
             if (param.isAnimating) {
                 param.stopAnimation();
-                playBtn.textContent = '▶ Animate ±20%';
+                playBtn.textContent = '▶';
             } else {
                 param.startAnimation();
-                playBtn.textContent = '⏸ Animating';
+                playBtn.textContent = '⏸';
             }
             audio.playClick();
         });
