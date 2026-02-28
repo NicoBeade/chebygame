@@ -719,17 +719,12 @@ class UIManager {
                        value="${param.value}" step="${isW0 ? 0.01 : 0.01}">
             </div>
             <div class="range-controls">
-                <input type="number" class="range-min" value="${param.min}" min="0">
-                <span>to</span>
-                <input type="number" class="range-max" value="${param.max}">
-                <button class="play-btn">${param.isAnimating ? '⏸' : '▶'}</button>
+                <button class="play-btn" style="width: 100%; border-radius: 4px; margin-top: 4px;">${param.isAnimating ? '⏸ Animating' : '▶ Animate ±20%'}</button>
             </div>
         `;
 
         const slider = container.querySelector('.param-slider');
         const valueSpan = container.querySelector('.param-value');
-        const minInput = container.querySelector('.range-min');
-        const maxInput = container.querySelector('.range-max');
         const playBtn = container.querySelector('.play-btn');
 
         // ------ Slider (visible in Sandbox mode) ------
@@ -747,32 +742,26 @@ class UIManager {
             const direction = e.deltaY > 0 ? -1 : 1;
             const delta = direction * step * this.scrollSensitivity;
 
-            param.value = Math.max(param.min, Math.min(param.max, param.value + delta));
+            // Allow infinite scrolling, just scale the bounds dynamically
+            param.value = Math.max(0.01, param.value + delta); // Prevent ≤ 0
+            param.autoRange();
 
             // Keep slider in sync
+            slider.min = param.min;
+            slider.max = param.max;
             slider.value = param.value;
             valueSpan.textContent = param.value.toFixed(isW0 ? 2 : 3);
 
             audio.playClick();
         }, { passive: false });
 
-        minInput.addEventListener('change', () => {
-            param.setRange(parseFloat(minInput.value), param.max);
-            slider.min = param.min;
-        });
-
-        maxInput.addEventListener('change', () => {
-            param.setRange(param.min, parseFloat(maxInput.value));
-            slider.max = param.max;
-        });
-
         playBtn.addEventListener('click', () => {
             if (param.isAnimating) {
                 param.stopAnimation();
-                playBtn.textContent = '▶';
+                playBtn.textContent = '▶ Animate ±20%';
             } else {
                 param.startAnimation();
-                playBtn.textContent = '⏸';
+                playBtn.textContent = '⏸ Animating';
             }
             audio.playClick();
         });

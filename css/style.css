@@ -520,21 +520,6 @@ button.active:hover {
     margin-top: 8px;
 }
 
-.range-controls input[type="number"] {
-    width: 38px;
-    background: var(--bg-dark);
-    border: 2px solid var(--primary);
-    color: var(--font-white);
-    padding: 2px;
-    font-family: var(--pixel-font);
-    font-size: 8px;
-}
-
-.range-controls span {
-    font-size: 8px;
-    color: var(--font-gray);
-}
-
 .play-btn {
     padding: 2px 5px;
     font-size: 10px;

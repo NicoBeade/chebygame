@@ -9,12 +9,17 @@
  * AnimatedParameter - A parameter that can oscillate within a range
  */
 class AnimatedParameter {
-    constructor(value, min, max) {
+    constructor(value) {
         this.value = value;
-        this.min = Math.max(0, min);  // Ensure min >= 0
-        this.max = max;
+        this.autoRange();
         this.isAnimating = false;
         this.phase = 0;  // 0 to 2π for oscillation
+    }
+
+    autoRange() {
+        // Enforce the sliders to cleanly frame ±20% around the nominal value.
+        this.min = Math.max(0, this.value * 0.8);
+        this.max = this.value * 1.2;
     }
 
     setRange(min, max) {
@@ -114,7 +119,7 @@ class FilterStage {
 class FirstOrderLowPass extends FilterStage {
     constructor(w0 = 1.0) {
         super('pole');
-        this.w0 = new AnimatedParameter(w0, 0.01, 100);
+        this.w0 = new AnimatedParameter(w0);
     }
 
     getResponse(omega) {
@@ -150,8 +155,8 @@ class FirstOrderLowPass extends FilterStage {
 class SecondOrderLowPass extends FilterStage {
     constructor(w0 = 1.0, Q = 0.707) {
         super('biquad');
-        this.w0 = new AnimatedParameter(w0, 0.01, 100);
-        this.Q = new AnimatedParameter(Q, 0.1, 20);
+        this.w0 = new AnimatedParameter(w0);
+        this.Q = new AnimatedParameter(Q);
     }
 
     getResponse(omega) {
