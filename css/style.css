@@ -359,8 +359,9 @@ button.active:hover {
     background: var(--bg-dark);
     border: 2px solid var(--primary);
     padding: 5px 10px;
-    height: 125px;
-    flex-shrink: 0;
+    flex: 1 1 0;
+    min-height: 0;
+    max-height: 125px;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -440,7 +441,7 @@ button.active:hover {
 
 /* Challenge mode scroll controls */
 .challenge-mode .stage-card {
-    height: 75px;
+    max-height: 75px;
 }
 
 .param-control label {
