@@ -470,7 +470,7 @@ class UIManager {
             }
         });
 
-        const MAX_STAGES = 8;
+        const MAX_STAGES = 5;
 
         document.getElementById('add-pole').addEventListener('click', () => {
             if (this.cascade.stages.length >= MAX_STAGES) {
