@@ -178,7 +178,7 @@ h2 {
     background: #000510;
     border: 4px solid var(--primary);
     position: relative;
-    height: 600px;
+    height: 680px;
     overflow: hidden;
     box-shadow: inset 4px 4px 0px var(--bg-panel);
 }
@@ -196,7 +196,7 @@ h2 {
     /* slightly darker to differentiate */
     border: 4px solid var(--primary);
     position: relative;
-    height: 600px;
+    height: 680px;
     overflow: hidden;
     box-shadow: inset 4px 4px 0px var(--bg-panel);
 }
@@ -213,7 +213,7 @@ h2 {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    height: 600px;
+    height: 680px;
 }
 
 #controls-area * {
@@ -359,11 +359,24 @@ button.active:hover {
     background: var(--bg-dark);
     border: 2px solid var(--primary);
     padding: 5px 10px;
-    height: 110px;
+    height: 125px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+}
+
+.param-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.param-row span {
+    color: var(--font-dark);
+    font-size: 10px;
+    white-space: nowrap;
 }
 
 #global-gain-card {
