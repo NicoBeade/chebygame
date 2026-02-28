@@ -208,8 +208,8 @@ h2 {
 }
 
 #controls-area {
-    flex: 0 0 350px;
-    /* Fixed width of 350px */
+    flex: 0 0 550px;
+    /* Fixed width of 550px */
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -305,18 +305,43 @@ button.active:hover {
 }
 
 /* ── Filter Controls ─────────────────────────────────────────── */
+#controls-layout {
+    display: flex;
+    flex: 1;
+    gap: 15px;
+    min-height: 0;
+}
+
+#controls-left,
+#controls-right {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+#controls-left {
+    flex: 0 0 240px;
+}
+
+#controls-right {
+    flex: 1;
+    background: var(--bg-panel);
+    border: 4px solid var(--primary);
+    padding: 15px;
+    overflow-y: auto;
+}
+
 #filter-controls {
     background: var(--bg-panel);
     border: 4px solid var(--primary);
     padding: 15px;
-    flex: 1;
-    overflow-y: auto;
-    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 #stages-list {
-    max-height: 250px;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .stage-card {

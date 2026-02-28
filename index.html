@@ -43,41 +43,50 @@
                     <div class="hud-item">Round: <span id="round">1</span></div>
                 </div>
 
-                <div id="filter-controls">
-                    <h2>Filter Stages</h2>
+                <div id="controls-layout">
+                    <div id="controls-left">
+                        <div id="filter-controls">
+                            <h2>Filter Stages</h2>
 
-                    <div class="stage-card" id="global-gain-card" style="border-color: var(--accent-cyan);">
-                        <div class="stage-header"
-                            style="background: var(--bg-dark); color: var(--accent-cyan); cursor: default;">Overall
-                            System Gain</div>
-                        <div class="param-row">
-                            <span>Gain dB</span>
-                            <input type="range" class="param-slider" id="global-gain-slider" min="-46" max="3" value="0"
-                                step="0.5">
-                            <span class="param-value" id="global-gain-value" style="cursor: ns-resize;"
-                                title="Scroll to adjust">0.0</span>
+                            <div class="stage-card" id="global-gain-card" style="border-color: var(--accent-cyan);">
+                                <div class="stage-header"
+                                    style="background: var(--bg-dark); color: var(--accent-cyan); cursor: default;">
+                                    Overall
+                                    System Gain</div>
+                                <div class="param-row">
+                                    <span>Gain dB</span>
+                                    <input type="range" class="param-slider" id="global-gain-slider" min="-46" max="3"
+                                        value="0" step="0.5">
+                                    <span class="param-value" id="global-gain-value" style="cursor: ns-resize;"
+                                        title="Scroll to adjust">0.0</span>
+                                </div>
+                            </div>
+
+                            <!-- stages-list relocated to right column -->
+                            <div class="add-buttons">
+                                <button id="add-pole">+ 1st Order (Pole)</button>
+                                <button id="add-biquad">+ 2nd Order (Biquad)</button>
+                            </div>
+                        </div>
+
+                        <div id="global-controls">
+                            <button id="play-all">▶ Play All</button>
+                            <button id="pause-all">⏸ Pause All</button>
+                            <button id="reset-all">↺ Restart</button>
+                            <button id="best-solution">★ Best Solution</button>
+
+                            <button id="hover-stage-toggle">🔍 View Hovered Stage</button>
+                            <!-- Challenge Mode Extra Controls -->
+                            <button id="btn-skip-level">⏭ Skip Level</button>
+                            <button id="btn-end-game">🛑 End Game</button>
                         </div>
                     </div>
 
-                    <div id="stages-list">
-                        <!-- Dynamic list of filter stages -->
+                    <div id="controls-right">
+                        <div id="stages-list">
+                            <!-- Dynamic list of filter stages -->
+                        </div>
                     </div>
-                    <div class="add-buttons">
-                        <button id="add-pole">+ 1st Order (Pole)</button>
-                        <button id="add-biquad">+ 2nd Order (Biquad)</button>
-                    </div>
-                </div>
-
-                <div id="global-controls">
-                    <button id="play-all">▶ Play All</button>
-                    <button id="pause-all">⏸ Pause All</button>
-                    <button id="reset-all">↺ Restart</button>
-                    <button id="best-solution">★ Best Solution</button>
-
-                    <button id="hover-stage-toggle">🔍 View Hovered Stage</button>
-                    <!-- Challenge Mode Extra Controls -->
-                    <button id="btn-skip-level">⏭ Skip Level</button>
-                    <button id="btn-end-game">🛑 End Game</button>
                 </div>
             </aside>
 
