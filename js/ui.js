@@ -740,8 +740,7 @@ class UIManager {
         container.innerHTML = `
             <div class="param-top-row">
                 <label>${label}:
-                    <span class="param-value" title="Scroll to adjust">${param.value.toFixed(isW0 ? 2 : 3)}</span>
-                    ${unit ? `<span class="param-unit">${unit}</span>` : ''}
+                    <span class="param-value" title="Scroll to adjust">${param.value.toFixed(isW0 ? 2 : 3)}</span>${unit ? `<span class="param-unit">${unit}</span>` : ''}
                 </label>
                 <input type="range" class="param-slider"
                        min="${param.min}" max="${param.max}"

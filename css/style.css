@@ -463,12 +463,17 @@ button.active:hover {
     color: var(--font-gray);
     font-size: 8px;
     letter-spacing: 1px;
-    width: 75px;
+    width: 90px;
 }
 
 .param-value {
     color: var(--accent-cyan);
     font-size: 12px;
+}
+
+.param-unit {
+    display: inline;
+    margin-left: 2px;
 }
 
 /* Challenge mode scroll controls */
