@@ -709,13 +709,15 @@ class UIManager {
         const step = isW0 ? 0.05 : 0.05;
 
         container.innerHTML = `
-            <label>${label}:
-                <span class="param-value" title="Scroll to adjust">${param.value.toFixed(isW0 ? 2 : 3)}</span>
-                ${unit ? `<span class="param-unit">${unit}</span>` : ''}
-            </label>
-            <input type="range" class="param-slider"
-                   min="${param.min}" max="${param.max}"
-                   value="${param.value}" step="${isW0 ? 0.01 : 0.01}">
+            <div class="param-top-row">
+                <label>${label}:
+                    <span class="param-value" title="Scroll to adjust">${param.value.toFixed(isW0 ? 2 : 3)}</span>
+                    ${unit ? `<span class="param-unit">${unit}</span>` : ''}
+                </label>
+                <input type="range" class="param-slider"
+                       min="${param.min}" max="${param.max}"
+                       value="${param.value}" step="${isW0 ? 0.01 : 0.01}">
+            </div>
             <div class="range-controls">
                 <input type="number" class="range-min" value="${param.min}" min="0">
                 <span>to</span>
