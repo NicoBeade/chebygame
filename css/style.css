@@ -359,9 +359,8 @@ button.active:hover {
     background: var(--bg-dark);
     border: 2px solid var(--primary);
     padding: 5px 10px;
-    flex: 1 1 0;
-    min-height: 0;
-    max-height: 125px;
+    height: 125px;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
