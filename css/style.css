@@ -329,6 +329,7 @@ button.active:hover {
     border: 4px solid var(--primary);
     padding: 10px;
     overflow: hidden;
+    min-width: 0;
 }
 
 #controls-right {
@@ -353,13 +354,14 @@ button.active:hover {
     flex-direction: column;
     gap: 5px;
     height: 100%;
+    justify-content: center;
 }
 
 .stage-card {
     background: var(--bg-dark);
     border: 2px solid var(--primary);
     padding: 5px 10px;
-    height: 115px;
+    height: 110px;
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
