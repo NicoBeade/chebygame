@@ -17,9 +17,15 @@ class AnimatedParameter {
     }
 
     autoRange() {
-        // Enforce the sliders to cleanly frame ±20% around the nominal value.
-        this.min = Math.max(0, this.value * 0.8);
-        this.max = this.value * 1.2;
+        let tolerance = 0.2; // default 20%
+        const tolInput = document.getElementById('slider-tolerance');
+        if (tolInput) {
+            tolerance = parseFloat(tolInput.value) / 100;
+        }
+
+        // Enforce the sliders to cleanly frame ± tolerance around the nominal value.
+        this.min = Math.max(0, this.value * (1 - tolerance));
+        this.max = this.value * (1 + tolerance);
     }
 
     setRange(min, max) {

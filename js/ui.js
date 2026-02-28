@@ -451,6 +451,24 @@ class UIManager {
             }, { passive: false });
         }
 
+        // Tolerance Control
+        const tolInput = document.getElementById('slider-tolerance');
+        if (tolInput) {
+            tolInput.addEventListener('change', () => {
+                for (const stage of this.cascade.stages) {
+                    if (stage.getParameters) {
+                        for (const param of stage.getParameters()) {
+                            param.autoRange();
+                            if (param._slider) {
+                                param._slider.min = param.min;
+                                param._slider.max = param.max;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         const unlimitedTime = document.getElementById('unlimited-time');
         document.getElementById('btn-skip-level').addEventListener('click', () => {
             if (this.game.mode === 'challenge' && this.game.subMode === 'zen') {
