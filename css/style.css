@@ -440,9 +440,6 @@ button.active:hover {
 }
 
 /* Challenge mode scroll controls */
-.challenge-mode .stage-card {
-    max-height: 75px;
-}
 
 .param-control label {
     display: inline-block;
