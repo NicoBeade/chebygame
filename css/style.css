@@ -350,9 +350,24 @@ button.active:hover {
     background: var(--bg-dark);
     border: 2px solid var(--primary);
     padding: 5px 10px;
+    height: 110px;
+    flex-shrink: 0;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
+}
+
+#global-gain-card {
+    padding: 15px 10px;
+    height: auto;
+    margin-bottom: 20px;
+}
+
+.add-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 .stage-card:hover {
