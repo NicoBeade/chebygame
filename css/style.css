@@ -438,6 +438,11 @@ button.active:hover {
     margin: 2px 0;
 }
 
+/* Challenge mode scroll controls */
+.challenge-mode .stage-card {
+    height: 75px;
+}
+
 .param-control label {
     display: inline-block;
     color: var(--font-gray);
