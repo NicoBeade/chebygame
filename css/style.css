@@ -434,7 +434,7 @@ button.active:hover {
 
 .challenge-mode .stage-params {
     flex-direction: row;
-    gap: 24px;
+    gap: 36px;
     align-items: center;
     justify-content: flex-start;
 }
@@ -505,7 +505,7 @@ button.active:hover {
     border-bottom: 2px solid var(--accent-cyan);
     padding: 2px 6px 2px 4px;
     /* Give the right edge more internal breathing room */
-    width: 55px;
+    width: 65px;
     text-align: right;
 }
 
