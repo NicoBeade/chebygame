@@ -367,14 +367,6 @@ button.active:hover {
     min-width: 0;
 }
 
-#itba-logo {
-    margin-top: auto;
-    max-width: 120px;
-    opacity: 0.25;
-    pointer-events: none;
-    align-self: flex-start;
-}
-
 .stage-card {
     background: var(--bg-dark);
     border: 2px solid var(--primary);
@@ -984,4 +976,32 @@ footer {
 #btn-submit-score:hover {
     background: var(--accent-orange);
     color: var(--bg-dark);
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+footer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    padding: 10px 0;
+}
+
+#footer-logo {
+    position: absolute;
+    left: 20px;
+    /* Indent for tidiness */
+    height: 35px;
+    /* Clean size relative to footer text */
+    image-rendering: pixelated;
+    bottom: 0px;
+    /* Align to baseline roughly */
+}
+
+#footer-center {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }
