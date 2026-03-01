@@ -68,8 +68,8 @@ body {
     position: relative;
     /* Hard pixel shadows */
     box-shadow: 10px 10px 0px var(--border-dark);
-    zoom: 0.67;
-    /* Scale entire UI down by 33% natively */
+    zoom: 0.54;
+    /* Scale entire UI down by an additional 20% */
 }
 
 /* Top decorative pixel line */
