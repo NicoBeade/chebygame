@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     requestAnimationFrame(loop);
 
-    // Welcome message
-    document.getElementById('message-area').textContent =
-        'Sandbox Mode. Build freely.';
+    // Default to Zen mode
+    ui.setMode('zen');
 });

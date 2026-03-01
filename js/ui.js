@@ -280,9 +280,12 @@ class PZMapManager {
         this.height = rect.height;
     }
 
-    autoScale(cascade) {
+    autoScale(cascade, constraints) {
         // Enforce a strict horizontal bound of 3
         this.maxS = 3;
+        if (constraints && constraints.ws) {
+            this.maxS = Math.max(3, constraints.ws * 1.2);
+        }
     }
 
     // Convert s-plane coordinate to canvas pixel
@@ -327,11 +330,11 @@ class PZMapManager {
         ctx.fillText("Re(s)", this.width - 35, yOrigin - 5);
         ctx.fillText("Im(s)", xOrigin + 5, 12);
 
-        // Draw semi-circles for w=1, w=3
+        // Draw semi-circles for w=1, w=3, w=5, w=10
         ctx.strokeStyle = 'rgba(74, 122, 138, 0.4)';
         ctx.setLineDash([4, 4]);
 
-        const wRadii = [1, 3];
+        const wRadii = [1, 3, 5, 10];
         for (const r of wRadii) {
             ctx.beginPath();
             // Canvas arc uses purely pixel dimensions so we map the radius from s-plane to pixels
@@ -362,8 +365,8 @@ class PZMapManager {
         ctx.stroke();
     }
 
-    render(cascade, hoveredStageId = null, showBest = false, bestSolutionStages = null) {
-        this.autoScale(cascade);
+    render(cascade, constraints = null, hoveredStageId = null, showBest = false, bestSolutionStages = null) {
+        this.autoScale(cascade, constraints);
         this.clear();
         this.drawGrid();
 
@@ -912,7 +915,7 @@ class UIManager {
             }
 
             this.plot.render(this.cascade, this.game.constraints, bestSol, this.showBestSolution, hoveredResponse);
-            this.pzmap.render(this.cascade, this.currentlyHoveredStageId, this.showBestSolution, bestStages);
+            this.pzmap.render(this.cascade, this.game.constraints, this.currentlyHoveredStageId, this.showBestSolution, bestStages);
             return;
         }
 
@@ -934,7 +937,7 @@ class UIManager {
 
         // First draw
         this.plot.render(this.cascade, this.game.constraints, bestSol, this.showBestSolution, hoveredResponse);
-        this.pzmap.render(this.cascade, this.currentlyHoveredStageId, this.showBestSolution, bestStages);
+        this.pzmap.render(this.cascade, this.game.constraints, this.currentlyHoveredStageId, this.showBestSolution, bestStages);
 
         // Then evaluate challenge logic
         if (this.game.mode === 'challenge' && this.game.constraints && !this.game.isPaused) {
