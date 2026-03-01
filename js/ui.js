@@ -503,7 +503,7 @@ class UIManager {
 
         const unlimitedTime = document.getElementById('unlimited-time');
         document.getElementById('btn-skip-level').addEventListener('click', () => {
-            if (this.game.mode === 'challenge' && this.game.subMode === 'zen') {
+            if (this.game.mode === 'zen') {
                 this.game.skipLevel(this.cascade);
                 this.cascade.clearStages();
                 this.stagesList.innerHTML = '';
@@ -923,12 +923,12 @@ class UIManager {
             return;
         }
 
-        const bestSol = this.game.mode === 'challenge' && this.showBestSolution
+        const bestSol = (this.game.mode === 'challenge' || this.game.mode === 'zen') && this.showBestSolution
             ? this.game.getBestSolution(this.plot.freqMin, this.plot.freqMax)?.response
             : null;
 
         let bestStages = null;
-        if (this.game.mode === 'challenge' && this.showBestSolution) {
+        if ((this.game.mode === 'challenge' || this.game.mode === 'zen') && this.showBestSolution) {
             const b = this.game.getBestSolutionStages();
             if (b) bestStages = b.stages;
         }
