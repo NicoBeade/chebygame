@@ -58,7 +58,6 @@ body {
 /* ── Main Container ─────────────────────────────────────────── */
 #game-container {
     width: calc(90vw / 0.54);
-    height: calc(90vh / 0.54);
     max-width: none;
     /* Eliminate limits so the plot stretches infinitely on widescreen monitors */
     background: var(--bg-dark);
@@ -182,6 +181,7 @@ h2 {
     background: #000510;
     border: 4px solid var(--primary);
     position: relative;
+    height: 680px;
     overflow: hidden;
     box-shadow: inset 4px 4px 0px var(--bg-panel);
 }
@@ -199,6 +199,7 @@ h2 {
     /* slightly darker to differentiate */
     border: 4px solid var(--primary);
     position: relative;
+    height: 680px;
     overflow: hidden;
     box-shadow: inset 4px 4px 0px var(--bg-panel);
 }
@@ -215,6 +216,7 @@ h2 {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    height: 680px;
 }
 
 #controls-area * {
