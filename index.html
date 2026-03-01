@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChebyGame - Retro Filter Design</title>
-    <link rel="stylesheet" href="css/style.css?v=28">
+    <link rel="stylesheet" href="css/style.css?v=30">
 </head>
 
 <body>
@@ -89,13 +89,17 @@
                         <div id="global-controls">
                             <button id="play-all">▶ Play All</button>
                             <button id="pause-all">⏸ Pause All</button>
-                            <button id="reset-all">↺ Restart</button>
+                            <button id="reset-all">↺ Erase Stages</button>
                             <button id="best-solution">★ Best Solution</button>
-
                             <button id="hover-stage-toggle">🔍 View Hovered Stage</button>
+
+                            <button id="btn-popup-best" class="action-btn">★ See Best Solution</button>
+                            <button id="btn-popup-restart" class="action-btn">↻ Restart</button>
                             <!-- Challenge Mode Extra Controls -->
-                            <button id="btn-skip-level">⏭ Skip Level</button>
-                            <button id="btn-end-game">🛑 End Game</button>
+                            <div class="challenge-controls-row">
+                                <button id="btn-skip-level">⏭ Skip Level</button>
+                                <button id="btn-end-game">🛑 End Game</button>
+                            </div>
                         </div>
                     </div>
                 </div>

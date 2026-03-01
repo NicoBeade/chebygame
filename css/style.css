@@ -599,9 +599,18 @@ button.active:hover {
 #hover-stage-toggle,
 #btn-skip-level,
 #btn-end-game {
-    grid-column: span 2;
     border-color: var(--accent-purple);
     color: var(--accent-purple);
+}
+
+.challenge-controls-row {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.challenge-controls-row button {
+    flex: 1;
 }
 
 #best-solution:hover,

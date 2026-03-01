@@ -872,12 +872,14 @@ class UIManager {
 
         if (mode === 'challenge') {
             document.getElementById('btn-skip-level').style.display = 'none';
+            document.getElementById('btn-end-game').style.display = '';
             this.game.startChallenge('hardcore');
             this.overlay.classList.remove('hidden');
             document.getElementById('challenge-start-popup').classList.remove('hidden');
             document.getElementById('message-area').textContent = 'Challenge started! Match the target response.';
         } else if (mode === 'zen') {
             document.getElementById('btn-skip-level').style.display = '';
+            document.getElementById('btn-end-game').style.display = 'none';
             // Hide the overlay so it doesn't block interactions
             this.overlay.classList.add('hidden');
             document.getElementById('challenge-start-popup').classList.add('hidden');
@@ -944,7 +946,11 @@ class UIManager {
             if (this.game.isGameOver) {
                 this.showGameOver();
             } else if (this.game.checkConstraints(this.cascade)) {
-                this.showVictory();
+                // If hardcore challenge, end round and show victory
+                if (this.game.subMode === 'hardcore') {
+                    this.showVictory();
+                }
+                // If zen, stay silent. The curve simply turns green.
             }
         }
     }
