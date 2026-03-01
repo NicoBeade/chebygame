@@ -444,7 +444,7 @@ class UIManager {
                 const direction = e.deltaY > 0 ? -1 : 1;
                 const step = 0.1; // Gain step in dB
 
-                let newValue = this.cascade.globalGainDb + direction * step * this.scrollSensitivity;
+                let newValue = this.cascade.globalGainDb + direction * step;
                 newValue = Math.max(-46, Math.min(3, newValue));
                 this.cascade.globalGainDb = newValue;
                 audio.playClick();
@@ -461,7 +461,7 @@ class UIManager {
                 const step = 1; // 1% per tick
 
                 let currentVal = parseInt(tolValue.textContent, 10);
-                let newValue = Math.max(1, Math.min(100, currentVal + direction * step * this.scrollSensitivity));
+                let newValue = Math.max(1, Math.min(100, currentVal + direction * step));
 
                 tolValue.textContent = Math.round(newValue);
                 audio.playClick();
@@ -490,7 +490,7 @@ class UIManager {
                 const step = 0.1; // 0.1 Hz per tick
 
                 let currentVal = parseFloat(speedValue.textContent);
-                let newValue = Math.max(0.1, Math.min(10.0, currentVal + direction * step * this.scrollSensitivity));
+                let newValue = Math.max(0.1, Math.min(10.0, currentVal + direction * step));
 
                 this.cascade.animationSpeed = newValue;
                 speedValue.textContent = newValue.toFixed(1);
