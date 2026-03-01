@@ -68,6 +68,8 @@ body {
     position: relative;
     /* Hard pixel shadows */
     box-shadow: 10px 10px 0px var(--border-dark);
+    zoom: 0.67;
+    /* Scale entire UI down by 33% natively */
 }
 
 /* Top decorative pixel line */
@@ -999,8 +1001,9 @@ footer {
     height: 50px;
     /* Clean size relative to footer text */
     image-rendering: auto;
-    bottom: 0px;
-    /* Align to baseline roughly */
+    top: 50%;
+    transform: translateY(-50%);
+    /* Align perfectly to technical vertical center */
 }
 
 #footer-center {
