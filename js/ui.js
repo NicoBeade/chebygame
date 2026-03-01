@@ -357,7 +357,7 @@ class PZMapManager {
         ctx.lineWidth = 2;
         ctx.beginPath();
         // Draw an X
-        const size = 6;
+        const size = 3;
         ctx.moveTo(x - size, y - size);
         ctx.lineTo(x + size, y + size);
         ctx.moveTo(x - size, y + size);
