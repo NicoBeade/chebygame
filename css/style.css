@@ -220,6 +220,12 @@ h2 {
     box-sizing: border-box;
 }
 
+#controls-area.interaction-locked {
+    pointer-events: none !important;
+    filter: grayscale(40%);
+    opacity: 0.8;
+}
+
 /* ── Challenge HUD ───────────────────────────────────────────── */
 #challenge-hud {
     background: var(--bg-panel);

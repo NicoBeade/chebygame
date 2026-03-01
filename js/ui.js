@@ -637,20 +637,11 @@ class UIManager {
                 }
                 this.cascade.globalGainDb = best.globalGainDb;
                 this.updateParameterDisplays();
-
-                // disable all inputs so no input allowed
-                for (const el of this.stagesList.querySelectorAll('input, button')) {
-                    el.disabled = true;
-                }
-                for (const el of this.stagesList.querySelectorAll('.remove-btn, .play-btn, .range-controls')) {
-                    el.style.display = 'none';
-                }
-                const globalGainSlider = document.getElementById('global-gain-slider');
-                if (globalGainSlider) globalGainSlider.disabled = true;
             }
         });
 
         document.getElementById('btn-popup-restart').addEventListener('click', () => {
+            document.getElementById('controls-area').classList.remove('interaction-locked');
             this.overlay.classList.remove('hidden', 'viewing-best');
             this.gameoverPopup.classList.add('hidden');
 
@@ -843,6 +834,8 @@ class UIManager {
     }
 
     setMode(mode) {
+        document.getElementById('controls-area').classList.remove('interaction-locked');
+
         // Only clear the board if actually changing modes
         if (this.game.mode !== mode) {
             this.cascade.clearStages();
@@ -958,6 +951,7 @@ class UIManager {
     }
 
     showVictory() {
+        document.getElementById('controls-area').classList.add('interaction-locked');
         this.game.completeRound(this.cascade, (score) => {
             this.overlay.classList.remove('hidden');
             this.victoryPopup.classList.remove('hidden');
@@ -974,6 +968,7 @@ class UIManager {
                     audio.playTick(1.0);
                 } else {
                     clearInterval(interval);
+                    document.getElementById('controls-area').classList.remove('interaction-locked');
                     this.overlay.classList.add('hidden');
                     this.victoryPopup.classList.add('hidden');
                     this.cascade.clearStages();
@@ -985,6 +980,7 @@ class UIManager {
     }
 
     showGameOver() {
+        document.getElementById('controls-area').classList.add('interaction-locked');
         this.game.gameOver((score, rounds) => {
             this.overlay.classList.remove('hidden');
             this.gameoverPopup.classList.remove('hidden');
