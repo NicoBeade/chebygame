@@ -873,6 +873,7 @@ class UIManager {
         if (mode === 'challenge') {
             document.getElementById('btn-skip-level').style.display = 'none';
             document.getElementById('btn-end-game').style.display = '';
+            document.getElementById('reset-all').style.display = '';
             this.game.startChallenge('hardcore');
             this.overlay.classList.remove('hidden');
             document.getElementById('challenge-start-popup').classList.remove('hidden');
@@ -880,6 +881,7 @@ class UIManager {
         } else if (mode === 'zen') {
             document.getElementById('btn-skip-level').style.display = '';
             document.getElementById('btn-end-game').style.display = 'none';
+            document.getElementById('reset-all').style.display = 'none';
             // Hide the overlay so it doesn't block interactions
             this.overlay.classList.add('hidden');
             document.getElementById('challenge-start-popup').classList.add('hidden');
