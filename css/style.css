@@ -494,7 +494,8 @@ button.active:hover {
 
 .param-unit {
     display: inline;
-    margin-left: 2px;
+    margin-left: 5px;
+    margin-right: 4px;
 }
 
 /* Challenge mode scroll controls */
@@ -502,8 +503,9 @@ button.active:hover {
     cursor: ns-resize;
     display: inline-block;
     border-bottom: 2px solid var(--accent-cyan);
-    padding: 2px 4px;
-    width: 45px;
+    padding: 2px 6px 2px 4px;
+    /* Give the right edge more internal breathing room */
+    width: 55px;
     text-align: right;
 }
 
