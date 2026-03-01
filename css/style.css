@@ -480,6 +480,11 @@ button.active:hover {
     width: 90px;
 }
 
+.challenge-mode .param-top-row label {
+    width: auto;
+    white-space: nowrap;
+}
+
 .param-value {
     color: var(--accent-cyan);
     font-size: 12px;

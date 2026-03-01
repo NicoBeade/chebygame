@@ -783,8 +783,15 @@ class UIManager {
             const delta = direction * step * this.scrollSensitivity;
 
             // Allow infinite scrolling, just scale the bounds dynamically
-            param.value = Math.max(0.01, param.value + delta); // Prevent ≤ 0
+            let nextVal = param.value + delta;
+            if (!isW0) nextVal = Math.min(nextVal, 10.0);
+
+            param.value = Math.max(0.01, nextVal); // Prevent ≤ 0
             param.autoRange();
+
+            if (!isW0 && param.max > 10.0) {
+                param.max = 10.0;
+            }
 
             // Keep slider in sync
             slider.min = param.min;
