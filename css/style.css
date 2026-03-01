@@ -992,9 +992,9 @@ footer {
     position: absolute;
     left: 20px;
     /* Indent for tidiness */
-    height: 35px;
+    height: 50px;
     /* Clean size relative to footer text */
-    image-rendering: pixelated;
+    image-rendering: auto;
     bottom: 0px;
     /* Align to baseline roughly */
 }
