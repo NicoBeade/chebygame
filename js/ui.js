@@ -711,8 +711,8 @@ class UIManager {
         paramsContainer.className = 'stage-params';
 
         for (const param of stage.getParameters()) {
-            const isW0 = param === stage.w0;
-            const paramControl = this.createParameterControl(param, stage, isW0);
+            const isF0 = param === stage.f0;
+            const paramControl = this.createParameterControl(param, stage, isF0);
             paramsContainer.appendChild(paramControl);
         }
 
@@ -743,22 +743,22 @@ class UIManager {
         });
     }
 
-    createParameterControl(param, stage, isW0) {
+    createParameterControl(param, stage, isF0) {
         const container = document.createElement('div');
         container.className = 'param-control';
 
-        const label = isW0 ? 'ω₀' : 'Q';
-        const unit = isW0 ? 'kHz' : '';
-        const step = isW0 ? 0.05 : 0.05;
+        const label = isF0 ? 'f₀' : 'Q';
+        const unit = isF0 ? 'kHz' : '';
+        const step = isF0 ? 0.05 : 0.05;
 
         container.innerHTML = `
             <div class="param-top-row">
                 <label>${label}:
-                    <span class="param-value" title="Scroll to adjust">${param.value.toFixed(isW0 ? 2 : 3)}</span>${unit ? `<span class="param-unit">${unit}</span>` : ''}
+                    <span class="param-value" title="Scroll to adjust">${param.value.toFixed(isF0 ? 2 : 3)}</span>${unit ? `<span class="param-unit">${unit}</span>` : ''}
                 </label>
                 <input type="range" class="param-slider"
                        min="${param.min}" max="${param.max}"
-                       value="${param.value}" step="${isW0 ? 0.01 : 0.01}">
+                       value="${param.value}" step="${isF0 ? 0.01 : 0.01}">
                 <button class="play-btn" title="Animate ±20%">${param.isAnimating ? '⏸' : '▶'}</button>
             </div>
         `;
@@ -770,7 +770,7 @@ class UIManager {
         // ------ Slider (visible in Sandbox mode) ------
         slider.addEventListener('input', () => {
             param.value = parseFloat(slider.value);
-            valueSpan.textContent = param.value.toFixed(isW0 ? 2 : 3);
+            valueSpan.textContent = param.value.toFixed(isF0 ? 2 : 3);
         });
 
         // ------ Scroll wheel (active on hover over the value span) ------
@@ -784,12 +784,12 @@ class UIManager {
 
             // Allow infinite scrolling, just scale the bounds dynamically
             let nextVal = param.value + delta;
-            if (!isW0) nextVal = Math.min(nextVal, 10.0);
+            if (!isF0) nextVal = Math.min(nextVal, 10.0);
 
             param.value = Math.max(0.01, nextVal); // Prevent ≤ 0
             param.autoRange();
 
-            if (!isW0 && param.max > 10.0) {
+            if (!isF0 && param.max > 10.0) {
                 param.max = 10.0;
             }
 

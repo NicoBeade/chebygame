@@ -119,28 +119,28 @@ class FilterStage {
 
 /**
  * FirstOrderLowPass - Single pole lowpass
- * H(s) = ω₀ / (s + ω₀)
- * H(jω) = ω₀ / (jω + ω₀)
+ * H(s) = f₀ / (s + f₀)
+ * H(jω) = f₀ / (jω + f₀)
  */
 class FirstOrderLowPass extends FilterStage {
-    constructor(w0 = 1.0) {
+    constructor(f0 = 1.0) {
         super('pole');
-        this.w0 = new AnimatedParameter(w0);
+        this.f0 = new AnimatedParameter(f0);
     }
 
     getResponse(omega) {
-        const w0 = this.w0.value;
-        // H(jω) = ω₀ / (jω + ω₀) = ω₀ / (ω₀ + jω)
-        // = ω₀(ω₀ - jω) / (ω₀² + ω²)
-        const denom = w0 * w0 + omega * omega;
+        const f0 = this.f0.value;
+        // H(jω) = f₀ / (jω + f₀) = f₀ / (f₀ + jω)
+        // = f₀(f₀ - jω) / (f₀² + ω²)
+        const denom = f0 * f0 + omega * omega;
         return {
-            re: w0 * w0 / denom,
-            im: -w0 * omega / denom
+            re: f0 * f0 / denom,
+            im: -f0 * omega / denom
         };
     }
 
     getParameters() {
-        return [this.w0];
+        return [this.f0];
     }
 
     /**
@@ -148,69 +148,70 @@ class FirstOrderLowPass extends FilterStage {
      */
     getPoles() {
         return [
-            { re: -this.w0.value, im: 0 }
+            { re: -this.f0.value, im: 0 }
         ];
     }
 }
 
 /**
  * SecondOrderLowPass - Biquad lowpass
- * H(s) = ω₀² / (s² + (ω₀/Q)s + ω₀²)
- * H(jω) = ω₀² / (-ω² + j(ω₀/Q)ω + ω₀²)
+ * H(s) = f₀² / (s² + (f₀/Q)s + f₀²)
+ * H(jω) = f₀² / (-ω² + j(f₀/Q)ω + f₀²)
  */
 class SecondOrderLowPass extends FilterStage {
-    constructor(w0 = 1.0, Q = 0.707) {
+    constructor(f0 = 1.0, Q = 0.707) {
         super('biquad');
-        this.w0 = new AnimatedParameter(w0);
+        this.f0 = new AnimatedParameter(f0);
         this.Q = new AnimatedParameter(Q);
     }
 
     getResponse(omega) {
-        const w0 = this.w0.value;
+        const f0 = this.f0.value;
         const Q = this.Q.value;
 
-        // H(jω) = ω₀² / (ω₀² - ω² + j(ω₀/Q)ω)
-        const realPart = w0 * w0 - omega * omega;
-        const imagPart = (w0 / Q) * omega;
-        const denom = realPart * realPart + imagPart * imagPart;
+        // Denominator: (-ω² + f₀²) + j(f₀/Q)ω
+        const realPart = f0 * f0 - omega * omega;
+        const imagPart = (f0 / Q) * omega;
+        const denomMagSq = realPart * realPart + imagPart * imagPart;
 
-        const num = w0 * w0;
+        const num = f0 * f0;
+
         return {
-            re: num * realPart / denom,
-            im: -num * imagPart / denom
+            re: (num * realPart) / denomMagSq,
+            im: -(num * imagPart) / denomMagSq
         };
     }
 
     getParameters() {
-        return [this.w0, this.Q];
+        return [this.f0, this.Q];
     }
 
     /**
      * Get s-plane pole coordinates
      */
     getPoles() {
-        const w0 = this.w0.value;
+        const f0 = this.f0.value;
         const Q = this.Q.value;
 
-        // Characteristic equation: s^2 + (w0/Q)s + w0^2 = 0
-        // Roots: s = (-w0/Q ± sqrt((w0/Q)^2 - 4w0^2)) / 2
+        // Characteristic equation: s^2 + (f0/Q)s + f0^2 = 0
+        // Roots: s = (-f0/Q ± sqrt((f0/Q)^2 - 4f0^2)) / 2
 
-        const alpha = w0 / (2 * Q);
-        const discriminant = (w0 * w0) / (4 * Q * Q) - w0 * w0;
+        const alpha = f0 / (2 * Q);
+        const discriminant = (f0 * f0) / (4 * Q * Q) - f0 * f0;
 
-        if (discriminant < 0) {
-            // Underdamped (Complex conjugate pair)
-            const beta = Math.sqrt(-discriminant);
+        if (discriminant >= 0) {
+            // Overdamped or critically damped (real poles)
+            const sqrtDisc = Math.sqrt(discriminant);
             return [
-                { re: -alpha, im: beta },
-                { re: -alpha, im: -beta }
+                { re: -alpha + sqrtDisc, im: 0 },
+                { re: -alpha - sqrtDisc, im: 0 }
             ];
         } else {
-            // Overdamped or critically damped (Two real poles)
-            const root = Math.sqrt(discriminant);
+            // Underdamped (complex conjugate pair)
+            const sqrtDisc = Math.sqrt(-discriminant);
             return [
-                { re: -alpha + root, im: 0 },
-                { re: -alpha - root, im: 0 }
+                { re: -alpha, im: sqrtDisc },
+                { re: -alpha, im: -sqrtDisc }
             ];
         }
     }
@@ -429,19 +430,21 @@ class ChebyshevSolver {
         const poles = this.getPoles(n, epsilon, wp);
 
         const stages = [];
-        // Only need half the poles since they are conjugate pairs
-        for (let i = 0; i < Math.floor(n / 2); i++) {
-            const p = poles[i];
-            const w0 = Math.sqrt(p.sigma * p.sigma + p.omega * p.omega);
-            const Q = w0 / (-2 * p.sigma);
-            stages.push(new SecondOrderLowPass(w0, Q));
+        // Complex conjugate pairs -> Second-order stages
+        for (const p of poles) {
+            if (p.im > 0) { // Only process one from the conjugate pair
+                const f0 = Math.sqrt(p.sigma * p.sigma + p.omega * p.omega);
+                const Q = f0 / (-2 * p.sigma);
+                stages.push(new SecondOrderLowPass(f0, Q));
+            }
         }
 
-        // If order is odd, the middle pole is purely real (no imaginary component)
-        if (n % 2 !== 0) {
-            const p = poles[Math.floor(n / 2)];
-            const w0 = -p.sigma;
-            stages.push(new FirstOrderLowPass(w0));
+        // Real poles -> First-order stages
+        for (const p of poles) {
+            if (Math.abs(p.im) < 1e-10) { // Check for purely real poles
+                const f0 = -p.sigma;
+                stages.push(new FirstOrderLowPass(f0));
+            }
         }
 
         // Chebyshev Type-I even order passes DC at -Ap dB. 
