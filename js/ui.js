@@ -743,6 +743,16 @@ class UIManager {
         });
     }
 
+    formatParameterValue(val, isF0) {
+        if (isF0) {
+            // Drop to 1 decimal place if frequency is >= 10.0kHz to save space
+            return val >= 10.0 ? val.toFixed(1) : val.toFixed(2);
+        } else {
+            // Cap Q factor strictly at 2 decimal places to fit the UI cleanly
+            return val.toFixed(2);
+        }
+    }
+
     createParameterControl(param, stage, isF0) {
         const container = document.createElement('div');
         container.className = 'param-control';
@@ -754,7 +764,7 @@ class UIManager {
         container.innerHTML = `
             <div class="param-top-row">
                 <label>${label}:
-                    <span class="param-value" title="Scroll to adjust">${param.value.toFixed(isF0 ? 2 : 3)}</span>${unit ? `<span class="param-unit">${unit}</span>` : ''}
+                    <span class="param-value" title="Scroll to adjust">${this.formatParameterValue(param.value, isF0)}</span>${unit ? `<span class="param-unit">${unit}</span>` : ''}
                 </label>
                 <input type="range" class="param-slider"
                        min="${param.min}" max="${param.max}"
@@ -770,7 +780,7 @@ class UIManager {
         // ------ Slider (visible in Sandbox mode) ------
         slider.addEventListener('input', () => {
             param.value = parseFloat(slider.value);
-            valueSpan.textContent = param.value.toFixed(isF0 ? 2 : 3);
+            valueSpan.textContent = this.formatParameterValue(param.value, isF0);
         });
 
         // ------ Scroll wheel (active on hover over the value span) ------
@@ -797,7 +807,7 @@ class UIManager {
             slider.min = param.min;
             slider.max = param.max;
             slider.value = param.value;
-            valueSpan.textContent = param.value.toFixed(isF0 ? 2 : 3);
+            valueSpan.textContent = this.formatParameterValue(param.value, isF0);
 
             audio.playClick();
         }, { passive: false });
@@ -834,7 +844,7 @@ class UIManager {
             for (const param of stage.getParameters()) {
                 if (param._slider && param._valueSpan) {
                     param._slider.value = param.value;
-                    param._valueSpan.textContent = param.value.toFixed(param._isF0 ? 2 : 3);
+                    param._valueSpan.textContent = this.formatParameterValue(param.value, param._isF0);
                 }
             }
         }
