@@ -748,8 +748,8 @@ class UIManager {
             // Drop to 1 decimal place if frequency is >= 10.0kHz to save space
             return val >= 10.0 ? val.toFixed(1) : val.toFixed(2);
         } else {
-            // Cap Q factor strictly at 2 decimal places to fit the UI cleanly
-            return val.toFixed(2);
+            // Q factor uses 3 decimal places, except when at max (10.0) where it uses 2
+            return val >= 10.0 ? val.toFixed(2) : val.toFixed(3);
         }
     }
 
