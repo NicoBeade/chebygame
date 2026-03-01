@@ -434,7 +434,9 @@ button.active:hover {
 
 .challenge-mode .stage-params {
     flex-direction: row;
-    gap: 10px;
+    gap: 24px;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .remove-btn {
