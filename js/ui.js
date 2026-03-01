@@ -836,6 +836,21 @@ class UIManager {
     setMode(mode) {
         document.getElementById('controls-area').classList.remove('interaction-locked');
 
+        // Reset toggles globally when changing window context
+        this.showBestSolution = false;
+        const bestBtn = document.getElementById('best-solution');
+        if (bestBtn) {
+            bestBtn.classList.remove('active');
+            bestBtn.textContent = '★ Best Solution';
+        }
+
+        this.showHoveredStage = false;
+        const hoverBtn = document.getElementById('hover-stage-toggle');
+        if (hoverBtn) {
+            hoverBtn.classList.remove('active');
+            hoverBtn.textContent = '🔍 View Hovered Stage';
+        }
+
         // Only clear the board if actually changing modes
         if (this.game.mode !== mode) {
             this.cascade.clearStages();

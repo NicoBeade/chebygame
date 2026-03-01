@@ -197,6 +197,8 @@ class GameManager {
             timerEl.textContent = '∞';
             timerEl.classList.remove('timer-yellow', 'timer-red');
             timerEl.classList.add('timer-green');
+            document.getElementById('score').textContent = '-';
+            document.getElementById('round').textContent = '-';
         } else {
             timerEl.textContent = this.timeRemaining;
 
@@ -209,10 +211,10 @@ class GameManager {
             } else {
                 timerEl.classList.add('timer-red');
             }
-        }
 
-        document.getElementById('score').textContent = this.score;
-        document.getElementById('round').textContent = this.round;
+            document.getElementById('score').textContent = this.score;
+            document.getElementById('round').textContent = this.round;
+        }
     }
 
     /**
