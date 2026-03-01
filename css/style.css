@@ -371,6 +371,12 @@ button.active:hover {
     background: var(--bg-dark);
     border: 2px solid var(--primary);
     padding: 5px 10px;
+    -webkit-user-select: none;
+    /* Safari */
+    -ms-user-select: none;
+    /* IE 10 and IE 11 */
+    user-select: none;
+    /* Standard syntax */
     height: 125px;
     flex: none;
     max-width: 100%;
