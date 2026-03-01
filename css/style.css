@@ -496,6 +496,8 @@ button.active:hover {
     display: inline-block;
     border-bottom: 2px solid var(--accent-cyan);
     padding: 2px 4px;
+    width: 45px;
+    text-align: right;
 }
 
 .challenge-mode .param-value:hover {
