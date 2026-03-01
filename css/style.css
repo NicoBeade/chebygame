@@ -434,7 +434,7 @@ button.active:hover {
 
 .challenge-mode .stage-params {
     flex-direction: row;
-    gap: 36px;
+    gap: 18px;
     align-items: center;
     justify-content: flex-start;
 }
