@@ -86,7 +86,7 @@ class GameManager {
      * Start a new challenge round
      */
     startChallenge(subMode = 'hardcore') {
-        this.mode = 'challenge';
+        this.mode = subMode === 'zen' ? 'zen' : 'challenge';
         this.subMode = subMode;
         this.round = 1;
         this.score = 0;

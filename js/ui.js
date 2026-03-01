@@ -580,6 +580,11 @@ class UIManager {
             audio.playClick();
         });
 
+        document.getElementById('btn-zen').addEventListener('click', () => {
+            this.setMode('zen');
+            audio.playClick();
+        });
+
         document.getElementById('btn-challenge').addEventListener('click', () => {
             this.setMode('challenge');
             audio.playClick();
@@ -652,36 +657,33 @@ class UIManager {
             this.cascade.clearStages();
             this.stagesList.innerHTML = '';
 
-            // Show challenge start screen rather than jumping straight in
-            this.game.startChallenge();
-            document.getElementById('challenge-start-popup').classList.remove('hidden');
+            // Show challenge start screen rather than jumping straight in, unless Zen
+            const isZen = this.game.subMode === 'zen';
+            this.game.startChallenge(isZen ? 'zen' : 'hardcore');
+
+            if (isZen) {
+                this.game.startRound();
+            } else {
+                document.getElementById('challenge-start-popup').classList.remove('hidden');
+            }
             audio.playClick();
         });
 
         // Challenge Start Buttons
-        document.getElementById('btn-start-zen').addEventListener('click', () => {
-            document.getElementById('challenge-start-popup').classList.add('hidden');
-            this.overlay.classList.add('hidden');
+        const startChallengeBtn = document.getElementById('btn-start-challenge');
+        if (startChallengeBtn) {
+            startChallengeBtn.addEventListener('click', () => {
+                document.getElementById('challenge-start-popup').classList.add('hidden');
+                this.overlay.classList.add('hidden');
 
-            // Show Skip button during Zen
-            document.getElementById('btn-skip-level').style.display = '';
+                // Hide Skip button during normal Challenge
+                document.getElementById('btn-skip-level').style.display = 'none';
 
-            this.game.startChallenge('zen');
-            this.game.startRound();
-            audio.playClick();
-        });
-
-        document.getElementById('btn-start-hardcore').addEventListener('click', () => {
-            document.getElementById('challenge-start-popup').classList.add('hidden');
-            this.overlay.classList.add('hidden');
-
-            // Hide Skip button during Hardcore
-            document.getElementById('btn-skip-level').style.display = 'none';
-
-            this.game.startChallenge('hardcore');
-            this.game.startRound();
-            audio.playClick();
-        });
+                this.game.startChallenge('hardcore');
+                this.game.startRound();
+                audio.playClick();
+            });
+        }
 
         // Handle window resize for canvases
         window.addEventListener('resize', () => {
@@ -852,31 +854,40 @@ class UIManager {
         this.game.mode = mode;
 
         document.getElementById('btn-sandbox').classList.toggle('active', mode === 'sandbox');
+        document.getElementById('btn-zen').classList.toggle('active', mode === 'zen');
         document.getElementById('btn-challenge').classList.toggle('active', mode === 'challenge');
         document.getElementById('btn-leaderboard').classList.toggle('active', mode === 'leaderboard');
+
+        // Timer HUD visibility
         document.getElementById('challenge-hud').classList.toggle('hidden', mode === 'sandbox' || mode === 'leaderboard');
 
         // Toggle classes on game container for CSS-driven visibility
         const container = document.getElementById('game-container');
-        container.classList.toggle('challenge-mode', mode === 'challenge');
+        // Treat both Zen and Challenge identically for CSS card geometry hiding (115px, hidden tools)
+        container.classList.toggle('challenge-mode', mode === 'challenge' || mode === 'zen');
         container.classList.toggle('leaderboard-mode', mode === 'leaderboard');
 
         if (mode === 'challenge') {
-            document.getElementById('btn-skip-level').style.display = 'none'; // Re-eval'd after submode choice
-
-            this.game.startChallenge();
+            document.getElementById('btn-skip-level').style.display = 'none';
+            this.game.startChallenge('hardcore');
             this.overlay.classList.remove('hidden');
             document.getElementById('challenge-start-popup').classList.remove('hidden');
-            document.getElementById('message-area').textContent =
-                'Challenge started! Match the target filter response before time runs out.';
+            document.getElementById('message-area').textContent = 'Challenge started! Match the target response.';
+        } else if (mode === 'zen') {
+            document.getElementById('btn-skip-level').style.display = '';
+            // Hide the overlay so it doesn't block interactions
+            this.overlay.classList.add('hidden');
+            document.getElementById('challenge-start-popup').classList.add('hidden');
+            this.game.startChallenge('zen');
+            this.game.startRound(); // Auto-start the level directly without asking
+            document.getElementById('message-area').textContent = 'Zen Mode: Build without limits.';
         } else if (mode === 'leaderboard') {
             this.game.constraints = null;
             document.getElementById('message-area').textContent = 'HALL OF FAME';
             this.renderLeaderboard();
         } else {
             this.game.constraints = null;
-            document.getElementById('message-area').textContent =
-                'Sandbox Mode. Build freely.';
+            document.getElementById('message-area').textContent = 'Sandbox Mode. Build freely.';
         }
     }
 
