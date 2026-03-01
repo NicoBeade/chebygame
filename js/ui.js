@@ -354,10 +354,10 @@ class PZMapManager {
         const y = this.sToY(im);
 
         ctx.strokeStyle = color;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1;
         ctx.beginPath();
-        // Draw an X
-        const size = 3;
+        // Draw an ultra-sharp X
+        const size = 1.5;
         ctx.moveTo(x - size, y - size);
         ctx.lineTo(x + size, y + size);
         ctx.moveTo(x - size, y + size);
@@ -371,11 +371,11 @@ class PZMapManager {
         this.drawGrid();
 
         if (showBest && bestSolutionStages) {
-            // Draw best solution poles in faint purple first so they sit underneath
+            // Draw best solution poles in bright neon magenta first so they are highly visible
             for (const stage of bestSolutionStages) {
                 if (typeof stage.getPoles === 'function') {
                     for (const p of stage.getPoles()) {
-                        this.drawPole(p.re, p.im, 'rgba(150, 50, 200, 0.4)');
+                        this.drawPole(p.re, p.im, '#ff00ff');
                     }
                 }
             }
