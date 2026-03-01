@@ -58,8 +58,8 @@ body {
 /* ── Main Container ─────────────────────────────────────────── */
 #game-container {
     width: 98vw;
-    max-width: 2500px;
-    /* Expanded by 40% to allocate massive width to plot */
+    max-width: 3000px;
+    /* Expanded aggressively to allocate massive width to both plots */
     background: var(--bg-dark);
     border: 4px solid var(--primary);
     margin: 20px;
@@ -193,8 +193,8 @@ h2 {
 }
 
 #pzmap-area {
-    flex: 0 0 250px;
-    /* Fixed width of 250px */
+    flex: 0 0 450px;
+    /* Greatly widened to share horizontal real estate */
     background: #000205;
     /* slightly darker to differentiate */
     border: 4px solid var(--primary);
