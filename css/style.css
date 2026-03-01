@@ -367,6 +367,14 @@ button.active:hover {
     min-width: 0;
 }
 
+#itba-logo {
+    margin-top: auto;
+    max-width: 120px;
+    opacity: 0.25;
+    pointer-events: none;
+    align-self: flex-start;
+}
+
 .stage-card {
     background: var(--bg-dark);
     border: 2px solid var(--primary);
