@@ -227,6 +227,9 @@ h2 {
     padding: 12px;
     display: flex;
     justify-content: space-between;
+    height: 55px;
+    box-sizing: border-box;
+    align-items: center;
 }
 
 #challenge-hud .hud-item {
