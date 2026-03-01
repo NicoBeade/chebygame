@@ -797,7 +797,7 @@ class UIManager {
             slider.min = param.min;
             slider.max = param.max;
             slider.value = param.value;
-            valueSpan.textContent = param.value.toFixed(isW0 ? 2 : 3);
+            valueSpan.textContent = param.value.toFixed(isF0 ? 2 : 3);
 
             audio.playClick();
         }, { passive: false });
@@ -816,7 +816,7 @@ class UIManager {
         // Store reference for animation updates
         param._slider = slider;
         param._valueSpan = valueSpan;
-        param._isW0 = isW0;
+        param._isF0 = isF0;
 
         return container;
     }
@@ -834,7 +834,7 @@ class UIManager {
             for (const param of stage.getParameters()) {
                 if (param._slider && param._valueSpan) {
                     param._slider.value = param.value;
-                    param._valueSpan.textContent = param.value.toFixed(param._isW0 ? 2 : 3);
+                    param._valueSpan.textContent = param.value.toFixed(param._isF0 ? 2 : 3);
                 }
             }
         }
