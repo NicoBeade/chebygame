@@ -442,7 +442,7 @@ class UIManager {
                 e.stopPropagation();
                 // deltaY > 0 = scroll down = decrease
                 const direction = e.deltaY > 0 ? -1 : 1;
-                const step = 0.5; // Gain step in dB
+                const step = 0.1; // Gain step in dB
 
                 let newValue = this.cascade.globalGainDb + direction * step * this.scrollSensitivity;
                 newValue = Math.max(-46, Math.min(3, newValue));
@@ -458,12 +458,12 @@ class UIManager {
                 e.preventDefault();
                 e.stopPropagation();
                 const direction = e.deltaY > 0 ? -1 : 1;
-                const step = 5; // 5% per tick
+                const step = 1; // 1% per tick
 
                 let currentVal = parseInt(tolValue.textContent, 10);
-                let newValue = Math.max(1, Math.min(100, currentVal + direction * step));
+                let newValue = Math.max(1, Math.min(100, currentVal + direction * step * this.scrollSensitivity));
 
-                tolValue.textContent = newValue;
+                tolValue.textContent = Math.round(newValue);
                 audio.playClick();
 
                 for (const stage of this.cascade.stages) {
@@ -477,6 +477,24 @@ class UIManager {
                         }
                     }
                 }
+            }, { passive: false });
+        }
+
+        // Animation Speed Control
+        const speedValue = document.getElementById('slider-speed-value');
+        if (speedValue) {
+            speedValue.addEventListener('wheel', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const direction = e.deltaY > 0 ? -1 : 1;
+                const step = 0.1; // 0.1 Hz per tick
+
+                let currentVal = parseFloat(speedValue.textContent);
+                let newValue = Math.max(0.1, Math.min(10.0, currentVal + direction * step * this.scrollSensitivity));
+
+                this.cascade.animationSpeed = newValue;
+                speedValue.textContent = newValue.toFixed(1);
+                audio.playClick();
             }, { passive: false });
         }
 

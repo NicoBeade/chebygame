@@ -370,6 +370,11 @@ button.active:hover {
     justify-content: space-evenly;
 }
 
+.challenge-mode .stage-card {
+    height: 100px;
+    flex: none;
+}
+
 .param-row {
     display: flex;
     justify-content: space-between;
@@ -570,7 +575,8 @@ button.active:hover {
 
 .challenge-mode #play-all,
 .challenge-mode #pause-all,
-.challenge-mode #tolerance-row {
+.challenge-mode #tolerance-row,
+.challenge-mode #speed-row {
     display: none;
 }
 
