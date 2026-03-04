@@ -598,14 +598,18 @@ class UIManager {
             audio.playClick();
         });
         // High Score Submission
-        const submitHighScore = () => {
+        const submitHighScore = async () => {
             const nameInput = document.getElementById('high-score-name');
             let playerName = nameInput.value.trim().toUpperCase();
             if (!playerName) playerName = 'ANONYMOUS';
 
+            // Disable input while saving
+            nameInput.disabled = true;
+
             // Final score should be captured from game state
-            this.game.saveScore(playerName, this.game.score);
+            await this.game.saveScore(playerName, this.game.score);
             nameInput.value = '';
+            nameInput.disabled = false;
 
             // Hide score entry UI and show restart/best buttons
             document.getElementById('high-score-entry').classList.add('hidden');
@@ -1013,13 +1017,13 @@ class UIManager {
 
     showGameOver() {
         document.getElementById('controls-area').classList.add('interaction-locked');
-        this.game.gameOver((score, rounds) => {
+        this.game.gameOver(async (score, rounds) => {
             this.overlay.classList.remove('hidden');
             this.gameoverPopup.classList.remove('hidden');
             document.getElementById('gameover-message').textContent =
                 `Final Score: ${score} | Rounds: ${rounds}`;
 
-            const isHigh = this.game.isHighScore(score);
+            const isHigh = await this.game.isHighScore(score);
             const entryDiv = document.getElementById('high-score-entry');
             const btnsDiv = document.getElementById('gameover-buttons');
 
@@ -1034,12 +1038,16 @@ class UIManager {
         });
     }
 
-    renderLeaderboard() {
+    async renderLeaderboard() {
         const tbody = document.getElementById('leaderboard-body');
         if (!tbody) return;
 
+        // Show loading state while awaiting API
+        tbody.innerHTML = `<tr><td colspan="4" style="color: var(--font-gray); text-align: center;">LOADING...</td></tr>`;
+
+        const lb = await this.game.getLeaderboard();
+
         tbody.innerHTML = ''; // clear exiting rows
-        const lb = this.game.getLeaderboard();
 
         if (lb.length === 0) {
             const tr = document.createElement('tr');

@@ -4,6 +4,13 @@
  * Handles challenge mode, scoring, timer, and difficulty progression.
  */
 
+// ── Supabase Leaderboard Configuration ────────────────────────────────────
+// 1. Create a free project at https://supabase.com
+// 2. Replace these two values with your project's URL and anon key
+//    (found in: Project Settings → API)
+const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_KEY = 'YOUR_ANON_KEY';
+
 class GameManager {
     constructor() {
         this.mode = 'sandbox';  // 'sandbox' or 'challenge'
@@ -248,45 +255,57 @@ class GameManager {
     }
 
     /**
-     * Retrieve leaderboard from localStorage
+     * Retrieve top 10 scores from Supabase
      */
-    getLeaderboard() {
-        const data = localStorage.getItem('neandertool_leaderboard');
-        if (data) {
-            try {
-                const arr = JSON.parse(data);
-                // Ensure scores are guaranteed Ints
+    async getLeaderboard() {
+        try {
+            const res = await fetch(
+                `${SUPABASE_URL}/rest/v1/scores?select=name,score,date&order=score.desc&limit=10`,
+                {
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                }
+            );
+            if (res.ok) {
+                const arr = await res.json();
                 arr.forEach(e => { e.score = parseInt(e.score, 10) || 0; });
                 return arr;
-            } catch (e) {
-                return [];
             }
+        } catch (e) {
+            console.error('Leaderboard fetch error:', e);
         }
         return [];
     }
 
     /**
-     * Save score to leaderboard
+     * Save a score to Supabase
      */
-    saveScore(name, score, dateStr = null) {
-        const lb = this.getLeaderboard();
+    async saveScore(name, score, dateStr = null) {
         const date = dateStr ? dateStr : new Date().toISOString().split('T')[0];
-        lb.push({ name, score, date });
-
-        // Sort descending by score
-        lb.sort((a, b) => b.score - a.score);
-
-        // Keep top 10
-        const top10 = lb.slice(0, 10);
-        localStorage.setItem('neandertool_leaderboard', JSON.stringify(top10));
+        try {
+            await fetch(`${SUPABASE_URL}/rest/v1/scores`, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'Content-Type': 'application/json',
+                    'Prefer': 'return=minimal'
+                },
+                body: JSON.stringify({ name, score, date })
+            });
+        } catch (e) {
+            console.error('Leaderboard save error:', e);
+        }
     }
 
     /**
-     * Check if a score qualifies for the top 10
+     * Check if a score qualifies for the global top 10 asynchronously
      */
-    isHighScore(score) {
+    async isHighScore(score) {
         if (score <= 0) return false;
-        const lb = this.getLeaderboard();
+        const lb = await this.getLeaderboard();
         if (lb.length < 10) return true;
         // If it's strictly greater than the lowest score in the top 10
         return score > lb[lb.length - 1].score;
