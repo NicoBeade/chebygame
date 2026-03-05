@@ -8,8 +8,8 @@
 // 1. Create a free project at https://supabase.com
 // 2. Replace these two values with your project's URL and anon key
 //    (found in: Project Settings → API)
-const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
-const SUPABASE_KEY = 'YOUR_ANON_KEY';
+const SUPABASE_URL = 'https://iwwckvwdxdmdupxtplpv.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3d2NrdndkeGRtZHVweHRwbHB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NjcwMjcsImV4cCI6MjA4ODI0MzAyN30.Mj34IlquH1nW2vP34vL2QidJm3QDAdoXDNMLgpGnlNE';
 
 class GameManager {
     constructor() {
