@@ -137,6 +137,7 @@ class GameManager {
     startRound() {
         this.usedBestSolution = false; // Reset per round
         this.zenCurrentPassed = false;
+        this.isPaused = false; // Ensure timer runs (was set true by completeRound)
 
         if (this.subMode === 'zen') {
             // Load hardcoded zen level
