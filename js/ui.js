@@ -354,10 +354,10 @@ class PZMapManager {
         const y = this.sToY(im);
 
         ctx.strokeStyle = color;
-        ctx.lineWidth = 1;
+        ctx.lineWidth = 2;
         ctx.beginPath();
-        // Draw an ultra-sharp X
-        const size = 1.5;
+        // Draw a visible X marker
+        const size = 5;
         ctx.moveTo(x - size, y - size);
         ctx.lineTo(x + size, y + size);
         ctx.moveTo(x - size, y + size);
@@ -370,19 +370,9 @@ class PZMapManager {
         this.clear();
         this.drawGrid();
 
-        if (showBest && bestSolutionStages) {
-            // Draw best solution poles in bright neon magenta first so they are highly visible
-            for (const stage of bestSolutionStages) {
-                if (typeof stage.getPoles === 'function') {
-                    for (const p of stage.getPoles()) {
-                        this.drawPole(p.re, p.im, '#ff00ff');
-                    }
-                }
-            }
-        }
-
         if (!cascade || !cascade.stages) return;
 
+        // Draw user poles first
         for (const stage of cascade.stages) {
             if (!stage.active) continue;
             if (typeof stage.getPoles !== 'function') continue;
@@ -393,6 +383,20 @@ class PZMapManager {
             for (const p of stage.getPoles()) {
                 this.drawPole(p.re, p.im, color);
             }
+        }
+
+        // Draw best solution poles LAST (on top) so they're always visible
+        if (showBest && bestSolutionStages) {
+            const origLW = this.ctx.lineWidth;
+            for (const stage of bestSolutionStages) {
+                if (typeof stage.getPoles === 'function') {
+                    for (const p of stage.getPoles()) {
+                        this.ctx.lineWidth = 3;
+                        this.drawPole(p.re, p.im, '#ff00ff');
+                    }
+                }
+            }
+            this.ctx.lineWidth = origLW;
         }
     }
 }
@@ -502,11 +506,32 @@ class UIManager {
         }
 
         const unlimitedTime = document.getElementById('unlimited-time');
-        document.getElementById('btn-skip-level').addEventListener('click', () => {
+
+        // Zen mode: Previous Level
+        document.getElementById('btn-prev-level').addEventListener('click', () => {
             if (this.game.mode === 'zen') {
-                this.game.skipLevel(this.cascade);
+                this.game.prevLevel();
                 this.cascade.clearStages();
                 this.stagesList.innerHTML = '';
+                this.showBestSolution = false;
+                const bestBtn = document.getElementById('best-solution');
+                if (bestBtn) { bestBtn.classList.remove('active'); bestBtn.textContent = '★ Best Solution'; }
+                document.getElementById('btn-next-level').disabled = !this.game.zenLevelsPassed[this.game.round - 1];
+                this.render();
+                audio.playClick();
+            }
+        });
+
+        // Zen mode: Next Level (only enabled after passing)
+        document.getElementById('btn-next-level').addEventListener('click', () => {
+            if (this.game.mode === 'zen') {
+                this.game.nextLevel();
+                this.cascade.clearStages();
+                this.stagesList.innerHTML = '';
+                this.showBestSolution = false;
+                const bestBtn = document.getElementById('best-solution');
+                if (bestBtn) { bestBtn.classList.remove('active'); bestBtn.textContent = '★ Best Solution'; }
+                document.getElementById('btn-next-level').disabled = !this.game.zenLevelsPassed[this.game.round - 1];
                 this.render();
                 audio.playClick();
             }
@@ -563,6 +588,10 @@ class UIManager {
             const btn = document.getElementById('best-solution');
             btn.classList.toggle('active', this.showBestSolution);
             btn.textContent = this.showBestSolution ? '★ Hide Best' : '★ Best Solution';
+            // Mark that best solution was used this round (15% penalty in challenge)
+            if (this.showBestSolution) {
+                this.game.usedBestSolution = true;
+            }
             audio.playClick();
         });
 
@@ -900,7 +929,8 @@ class UIManager {
         container.classList.toggle('leaderboard-mode', mode === 'leaderboard');
 
         if (mode === 'challenge') {
-            document.getElementById('btn-skip-level').style.display = 'none';
+            document.getElementById('btn-prev-level').style.display = 'none';
+            document.getElementById('btn-next-level').style.display = 'none';
             document.getElementById('btn-end-game').style.display = '';
             document.getElementById('reset-all').style.display = '';
             this.game.startChallenge('hardcore');
@@ -908,7 +938,9 @@ class UIManager {
             document.getElementById('challenge-start-popup').classList.remove('hidden');
             document.getElementById('message-area').textContent = 'Challenge started! Match the target response.';
         } else if (mode === 'zen') {
-            document.getElementById('btn-skip-level').style.display = '';
+            document.getElementById('btn-prev-level').style.display = '';
+            document.getElementById('btn-next-level').style.display = '';
+            document.getElementById('btn-next-level').disabled = true; // Locked until level is passed
             document.getElementById('btn-end-game').style.display = 'none';
             document.getElementById('reset-all').style.display = '';
             // Hide the overlay so it doesn't block interactions
@@ -916,7 +948,7 @@ class UIManager {
             document.getElementById('challenge-start-popup').classList.add('hidden');
             this.game.startChallenge('zen');
             this.game.startRound(); // Auto-start the level directly without asking
-            document.getElementById('message-area').textContent = 'Zen Mode: Build without limits.';
+            document.getElementById('message-area').textContent = 'Zen Mode: Build at your own pace.';
         } else if (mode === 'leaderboard') {
             this.game.constraints = null;
             document.getElementById('message-area').textContent = 'HALL OF FAME';
@@ -973,15 +1005,32 @@ class UIManager {
         this.pzmap.render(this.cascade, this.game.constraints, this.currentlyHoveredStageId, this.showBestSolution, bestStages);
 
         // Then evaluate challenge logic
-        if (this.game.mode === 'challenge' && this.game.constraints && !this.game.isPaused) {
+        if ((this.game.mode === 'challenge' || this.game.mode === 'zen') && this.game.constraints && !this.game.isPaused) {
             if (this.game.isGameOver) {
                 this.showGameOver();
             } else if (this.game.checkConstraints(this.cascade)) {
-                // If hardcore challenge, end round and show victory
                 if (this.game.subMode === 'hardcore') {
                     this.showVictory();
+                } else if (this.game.subMode === 'zen' && !this.game.zenCurrentPassed) {
+                    // Zen mode: play CLING sound, stop timer, mark level passed
+                    this.game.completeRound(this.cascade, () => { });
+                    audio.playRoundComplete();
+
+                    // Enable Next Level button
+                    const nextBtn = document.getElementById('btn-next-level');
+                    if (this.game.round < ZEN_LEVELS.length) {
+                        nextBtn.disabled = false;
+                    }
+
+                    // Check if all levels are complete → coal popup!
+                    if (this.game.allZenLevelsComplete()) {
+                        setTimeout(() => {
+                            alert('🪨 Congratulations on completing Zen, here\'s a piece of coal! 🪨');
+                        }, 500);
+                    }
+
+                    this.game.updateHUD();
                 }
-                // If zen, stay silent. The curve simply turns green.
             }
         }
     }

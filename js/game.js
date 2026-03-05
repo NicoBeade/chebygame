@@ -11,20 +11,46 @@
 const SUPABASE_URL = 'https://iwwckvwdxdmdupxtplpv.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml3d2NrdndkeGRtZHVweHRwbHB2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2NjcwMjcsImV4cCI6MjA4ODI0MzAyN30.Mj34IlquH1nW2vP34vL2QidJm3QDAdoXDNMLgpGnlNE';
 
+// ── 15 Hardcoded Zen Levels ────────────────────────────────────────────────
+const ZEN_LEVELS = [
+    { wp: 1, ratio: 3.0, Ap: 3, As: 20, minOrder: 1 },
+    { wp: 2, ratio: 2.8, Ap: 3, As: 22, minOrder: 1 },
+    { wp: 3, ratio: 2.5, Ap: 3, As: 24, minOrder: 2 },
+    { wp: 1, ratio: 2.3, Ap: 3, As: 26, minOrder: 2 },
+    { wp: 5, ratio: 2.1, Ap: 3, As: 28, minOrder: 3 },
+    { wp: 2, ratio: 1.9, Ap: 3, As: 30, minOrder: 3 },
+    { wp: 4, ratio: 1.8, Ap: 3, As: 31, minOrder: 4 },
+    { wp: 3, ratio: 1.7, Ap: 3, As: 32, minOrder: 4 },
+    { wp: 1, ratio: 1.65, Ap: 3, As: 33, minOrder: 5 },
+    { wp: 5, ratio: 1.6, Ap: 3, As: 34, minOrder: 5 },
+    { wp: 2, ratio: 1.55, Ap: 3, As: 35, minOrder: 6 },
+    { wp: 4, ratio: 1.5, Ap: 3, As: 36, minOrder: 6 },
+    { wp: 3, ratio: 1.45, Ap: 3, As: 38, minOrder: 7 },
+    { wp: 1, ratio: 1.4, Ap: 3, As: 40, minOrder: 7 },
+    { wp: 5, ratio: 1.35, Ap: 3, As: 42, minOrder: 8 },
+];
+
 class GameManager {
     constructor() {
-        this.mode = 'sandbox';  // 'sandbox' or 'challenge'
+        this.mode = 'sandbox';  // 'sandbox', 'challenge', or 'zen'
         this.score = 0;
         this.round = 1;
         this.timeRemaining = 60;
+        this.timeElapsed = 0;   // Zen mode count-up timer
         this.timerInterval = null;
         this.countdownInterval = null;
         this.constraints = null;
         this.isGameOver = false;
         this.isPaused = false; // Used during popups
+        this.usedBestSolution = false; // Penalty flag per round
 
-        // Difficulty settings
-        this.baseMinOrder = 2;
+        // Zen mode state
+        this.zenLevelsPassed = new Array(ZEN_LEVELS.length).fill(false);
+        this.zenBestTimes = new Array(ZEN_LEVELS.length).fill(null);
+        this.zenCurrentPassed = false; // Has current level been passed?
+
+        // Challenge difficulty settings (start at order 1, scale gradually)
+        this.baseMinOrder = 1;
         this.orderIncreasePerRound = 0.5;
     }
 
@@ -99,6 +125,7 @@ class GameManager {
         this.score = 0;
         this.isGameOver = false;
         this.isPaused = false;
+        this.usedBestSolution = false;
 
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
@@ -108,20 +135,32 @@ class GameManager {
     }
 
     startRound() {
-        this.timeRemaining = 60;
-        this.generateConstraints();
-        this.updateHUD();
+        this.usedBestSolution = false; // Reset per round
+        this.zenCurrentPassed = false;
 
-        // Start timer
-        if (this.timerInterval) clearInterval(this.timerInterval);
+        if (this.subMode === 'zen') {
+            // Load hardcoded zen level
+            this.loadZenLevel(this.round);
+            this.timeElapsed = 0;
 
-        if (this.subMode === 'hardcore') {
+            // Start count-UP timer
+            if (this.timerInterval) clearInterval(this.timerInterval);
             this.timerInterval = setInterval(() => {
-                if (this.isPaused) return; // Freeze timer during popups
+                if (this.isPaused) return;
+                this.timeElapsed++;
+                this.updateHUD();
+            }, 1000);
+        } else {
+            // Hardcore mode
+            this.timeRemaining = 60;
+            this.generateConstraints();
 
+            // Start countdown timer
+            if (this.timerInterval) clearInterval(this.timerInterval);
+            this.timerInterval = setInterval(() => {
+                if (this.isPaused) return;
                 this.timeRemaining--;
 
-                // Play tick — urgency increases as time decreases (0 when full, 1 when empty)
                 const urgency = Math.max(0, Math.min(1, 1 - this.timeRemaining / 60));
                 audio.playTick(urgency);
 
@@ -133,11 +172,55 @@ class GameManager {
                 this.updateHUD();
             }, 1000);
         }
+
+        this.updateHUD();
     }
 
-    skipLevel() {
+    /**
+     * Load constraints from the hardcoded ZEN_LEVELS array
+     */
+    loadZenLevel(levelNum) {
+        const idx = Math.min(levelNum - 1, ZEN_LEVELS.length - 1);
+        const lv = ZEN_LEVELS[idx];
+        const stopbandFreq = lv.wp * lv.ratio;
+
+        this.constraints = {
+            passband: { freqMin: 0.1, freqMax: lv.wp, dbMin: -lv.Ap },
+            stopband: { freqMin: stopbandFreq, freqMax: 100, dbMax: -lv.As },
+            wp: lv.wp,
+            ws: stopbandFreq,
+            Ap: lv.Ap,
+            As: lv.As,
+            minOrder: lv.minOrder
+        };
+    }
+
+    /**
+     * Navigate to next zen level (only if current is passed)
+     */
+    nextLevel() {
         if (this.subMode !== 'zen') return;
+        if (!this.zenCurrentPassed && !this.zenLevelsPassed[this.round - 1]) return;
+        if (this.round >= ZEN_LEVELS.length) return;
+        this.round++;
         this.startRound();
+    }
+
+    /**
+     * Navigate to previous zen level
+     */
+    prevLevel() {
+        if (this.subMode !== 'zen') return;
+        if (this.round <= 1) return;
+        this.round--;
+        this.startRound();
+    }
+
+    /**
+     * Check if all zen levels have been completed
+     */
+    allZenLevelsComplete() {
+        return this.zenLevelsPassed.every(p => p);
     }
 
     endGame() {
@@ -155,24 +238,39 @@ class GameManager {
 
         let roundScore = 0;
 
-        if (this.subMode === 'hardcore') {
-            // Score based on time and stages used
+        if (this.subMode === 'zen') {
+            // Mark level as passed
+            this.zenCurrentPassed = true;
+            this.zenLevelsPassed[this.round - 1] = true;
+
+            // Track best time
+            const prevBest = this.zenBestTimes[this.round - 1];
+            if (prevBest === null || this.timeElapsed < prevBest) {
+                this.zenBestTimes[this.round - 1] = this.timeElapsed;
+            }
+        } else {
+            // Hardcore scoring
             const timeBonus = this.timeRemaining * 10;
             const stageCount = cascade.stages.length;
             const optimalOrder = this.constraints.minOrder;
             const stagePenalty = Math.max(0, (stageCount - optimalOrder) * 50);
 
             roundScore = Math.max(0, 1000 + timeBonus - stagePenalty);
+
+            // Penalty for using best solution
+            if (this.usedBestSolution) {
+                roundScore = Math.floor(roundScore * 0.15);
+            }
+
             this.score += roundScore;
         }
 
         audio.playRoundComplete();
 
-        // Trigger the UI popup and countdown
+        // Trigger the UI callback (no auto-advance in zen mode)
         if (uiCallback) {
             uiCallback(roundScore);
-        } else {
-            // Fallback if no UI attached
+        } else if (this.subMode !== 'zen') {
             this.proceedToNextRound();
         }
 
@@ -201,11 +299,23 @@ class GameManager {
         const timerEl = document.getElementById('timer');
 
         if (this.subMode === 'zen') {
-            timerEl.textContent = '∞';
+            // Count-up timer display (MM:SS)
+            const mins = Math.floor(this.timeElapsed / 60);
+            const secs = this.timeElapsed % 60;
+            timerEl.textContent = `${mins}:${String(secs).padStart(2, '0')}`;
             timerEl.classList.remove('timer-yellow', 'timer-red');
             timerEl.classList.add('timer-green');
-            document.getElementById('score').textContent = '-';
-            document.getElementById('round').textContent = '-';
+
+            // Show best personal time for this level
+            const bestTime = this.zenBestTimes[this.round - 1];
+            if (bestTime !== null) {
+                const bm = Math.floor(bestTime / 60);
+                const bs = bestTime % 60;
+                document.getElementById('score').textContent = `${bm}:${String(bs).padStart(2, '0')}`;
+            } else {
+                document.getElementById('score').textContent = '--:--';
+            }
+            document.getElementById('round').textContent = `${this.round}/${ZEN_LEVELS.length}`;
         } else {
             timerEl.textContent = this.timeRemaining;
 

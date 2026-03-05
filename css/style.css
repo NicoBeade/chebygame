@@ -620,14 +620,16 @@ button.active:hover {
 #game-container:not(.challenge-mode) #reset-all,
 #game-container:not(.challenge-mode) #best-solution,
 #game-container:not(.challenge-mode) #hover-stage-toggle,
-#game-container:not(.challenge-mode) #btn-skip-level,
+#game-container:not(.challenge-mode) #btn-prev-level,
+#game-container:not(.challenge-mode) #btn-next-level,
 #game-container:not(.challenge-mode) #btn-end-game {
     display: none;
 }
 
 #best-solution,
 #hover-stage-toggle,
-#btn-skip-level,
+#btn-prev-level,
+#btn-next-level,
 #btn-end-game {
     border-color: var(--accent-purple);
     color: var(--accent-purple);
@@ -645,10 +647,16 @@ button.active:hover {
 
 #best-solution:hover,
 #hover-stage-toggle:hover,
-#btn-skip-level:hover,
+#btn-prev-level:hover,
+#btn-next-level:hover:not(:disabled),
 #btn-end-game:hover {
     background: var(--accent-purple);
     color: var(--font-white);
+}
+
+#btn-next-level:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
 }
 
 #best-solution.active,
@@ -848,7 +856,7 @@ footer {
     background: var(--bg-panel);
     border: 4px solid var(--accent-orange);
     padding: 30px;
-    height: 500px;
+    height: 680px;
     overflow-y: auto;
 }
 
