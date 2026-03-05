@@ -688,6 +688,14 @@ class UIManager {
             const isZen = this.game.subMode === 'zen';
             this.game.startChallenge(isZen ? 'zen' : 'hardcore');
 
+            // Reset Best Solution state for the new round
+            this.showBestSolution = false;
+            const bestSolutionBtn = document.getElementById('best-solution');
+            if (bestSolutionBtn) {
+                bestSolutionBtn.classList.remove('active');
+                bestSolutionBtn.textContent = '★ Best Solution';
+            }
+
             if (isZen) {
                 this.game.startRound();
             } else {
@@ -695,6 +703,16 @@ class UIManager {
             }
             audio.playClick();
         });
+
+        // Zen Coal Popup Button
+        const btnCloseCoal = document.getElementById('btn-close-zen-coal');
+        if (btnCloseCoal) {
+            btnCloseCoal.addEventListener('click', () => {
+                document.getElementById('zen-coal-popup').classList.add('hidden');
+                this.overlay.classList.add('hidden');
+                audio.playClick();
+            });
+        }
 
         // Challenge Start Buttons
         const startChallengeBtn = document.getElementById('btn-start-challenge');
@@ -708,6 +726,14 @@ class UIManager {
                 if (prevBtn) prevBtn.style.display = 'none';
                 const nextBtn = document.getElementById('btn-next-level');
                 if (nextBtn) nextBtn.style.display = 'none';
+
+                // Reset Best Solution state
+                this.showBestSolution = false;
+                const bestBtn = document.getElementById('best-solution');
+                if (bestBtn) {
+                    bestBtn.classList.remove('active');
+                    bestBtn.textContent = '★ Best Solution';
+                }
 
                 this.game.startChallenge('hardcore');
                 this.game.startRound();
@@ -1051,7 +1077,7 @@ class UIManager {
                     // Check if all levels are complete → coal popup!
                     if (this.game.allZenLevelsComplete()) {
                         setTimeout(() => {
-                            alert('🪨 Congratulations on completing Zen, here\'s a piece of coal! 🪨');
+                            this.showZenCoalPopup();
                         }, 500);
                     }
 
@@ -1084,6 +1110,15 @@ class UIManager {
                     this.victoryPopup.classList.add('hidden');
                     this.cascade.clearStages();
                     this.stagesList.innerHTML = '';
+
+                    // Reset Best Solution state for the new round
+                    this.showBestSolution = false;
+                    const bestBtn = document.getElementById('best-solution');
+                    if (bestBtn) {
+                        bestBtn.classList.remove('active');
+                        bestBtn.textContent = '★ Best Solution';
+                    }
+
                     this.game.proceedToNextRound();
                 }
             }, 1000);
@@ -1098,19 +1133,38 @@ class UIManager {
             document.getElementById('gameover-message').textContent =
                 `Final Score: ${score} | Rounds: ${rounds}`;
 
-            const isHigh = await this.game.isHighScore(score);
             const entryDiv = document.getElementById('high-score-entry');
             const btnsDiv = document.getElementById('gameover-buttons');
+            const loadingDiv = document.getElementById('gameover-loading');
+
+            // Show loading state while awaiting API
+            entryDiv.classList.add('hidden');
+            btnsDiv.classList.add('hidden');
+            if (loadingDiv) loadingDiv.classList.remove('hidden');
+
+            const isHigh = await this.game.isHighScore(score);
+
+            if (loadingDiv) loadingDiv.classList.add('hidden');
 
             if (isHigh) {
                 entryDiv.classList.remove('hidden');
-                btnsDiv.classList.add('hidden');
                 document.getElementById('high-score-name').focus();
             } else {
-                entryDiv.classList.add('hidden');
                 btnsDiv.classList.remove('hidden');
             }
         });
+    }
+
+    showZenCoalPopup() {
+        this.overlay.classList.remove('hidden');
+        const popup = document.getElementById('zen-coal-popup');
+        if (popup) {
+            popup.classList.remove('hidden');
+            // Hide other popups just in case
+            this.gameoverPopup.classList.add('hidden');
+            this.victoryPopup.classList.add('hidden');
+            document.getElementById('challenge-start-popup').classList.add('hidden');
+        }
     }
 
     async renderLeaderboard() {

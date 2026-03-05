@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ChebyGame - Retro Filter Design</title>
-    <link rel="stylesheet" href="css/style.css?v=63">
+    <link rel="stylesheet" href="css/style.css?v=64">
 </head>
 
 <body>
@@ -151,6 +151,10 @@
                 <h2 class="popup-title">SIMULATION FAILED</h2>
                 <p id="gameover-message" class="popup-message">Final Score: 0</p>
 
+                <div id="gameover-loading" class="hidden">
+                    <p style="color: var(--font-gray); margin-top: 10px;">Checking leaderboard...</p>
+                </div>
+
                 <div id="high-score-entry" class="hidden">
                     <p class="new-record-text">NEW RECORD DETECTED!</p>
                     <input type="text" id="high-score-name" placeholder="ENTER NAME" maxlength="12">
@@ -160,6 +164,22 @@
                 <div class="popup-buttons" id="gameover-buttons">
                     <button id="btn-popup-restart">RESTART</button>
                     <button id="btn-popup-best">SEE BEST SOLUTION</button>
+                </div>
+            </div>
+
+            <div id="zen-coal-popup" class="popup-box hidden">
+                <h2 class="popup-title">ZEN PATH COMPLETE</h2>
+                <div class="popup-message popup-message-start">
+                    <div style="font-size: 48px; margin-bottom: 10px;">🪨</div>
+                    Congratulations!<br><br>
+                    You have achieved perfect filter harmony and completed all 15 Zen levels.<br><br>
+                    As a reward, you receive this piece of coal. It's not much, but it's yours.
+                </div>
+                <div style="margin-top: 20px;">
+                    <button id="btn-close-zen-coal"
+                        style="font-size: 16px; padding: 10px 20px; border-color: var(--font-white); color: var(--font-white);">
+                        ACCEPT COAL
+                    </button>
                 </div>
             </div>
         </div>
