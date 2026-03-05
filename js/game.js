@@ -123,6 +123,8 @@ class GameManager {
         this.subMode = subMode;
         this.round = 1;
         this.score = 0;
+        this.timeRemaining = 60;
+        this.timeElapsed = 0;
         this.isGameOver = false;
         this.isPaused = false;
         this.usedBestSolution = false;
@@ -130,6 +132,9 @@ class GameManager {
         if (this.timerInterval) {
             clearInterval(this.timerInterval);
         }
+
+        // Immediately update HUD so it doesn't show stale values from previous mode
+        this.updateHUD();
 
         // Wait for explicit this.startRound() call from UI
     }
