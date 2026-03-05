@@ -226,7 +226,10 @@ class GameManager {
      * Check if all zen levels have been completed
      */
     allZenLevelsComplete() {
-        return this.zenLevelsPassed.every(p => p);
+        // Just checking if the last level is passed is enough, 
+        // since players must pass preceding levels to reach it.
+        // This also allows dev skips to trigger the finale correctly.
+        return this.zenLevelsPassed[ZEN_LEVELS.length - 1];
     }
 
     endGame() {

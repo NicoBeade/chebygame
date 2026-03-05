@@ -992,7 +992,6 @@ class UIManager {
         } else if (mode === 'zen') {
             document.getElementById('btn-prev-level').style.display = '';
             document.getElementById('btn-next-level').style.display = '';
-            document.getElementById('btn-next-level').disabled = true; // Locked until level is passed
             document.getElementById('btn-end-game').style.display = 'none';
             document.getElementById('reset-all').style.display = '';
             // Hide the overlay so it doesn't block interactions
@@ -1000,6 +999,9 @@ class UIManager {
             document.getElementById('challenge-start-popup').classList.add('hidden');
             this.game.startChallenge('zen');
             this.game.startRound(); // Auto-start the level directly without asking
+
+            // Unlock "Next" if the first level was already passed in this session
+            document.getElementById('btn-next-level').disabled = !this.game.zenLevelsPassed[0];
             document.getElementById('message-area').textContent = 'Zen Mode: Build at your own pace.';
         } else if (mode === 'leaderboard') {
             this.game.constraints = null;
