@@ -298,6 +298,7 @@ class GameManager {
 
     updateHUD() {
         const timerEl = document.getElementById('timer');
+        const scoreLabel = document.getElementById('score-label');
 
         if (this.subMode === 'zen') {
             // Count-up timer display (MM:SS)
@@ -307,7 +308,8 @@ class GameManager {
             timerEl.classList.remove('timer-yellow', 'timer-red');
             timerEl.classList.add('timer-green');
 
-            // Show best personal time for this level
+            // Label and best personal time
+            if (scoreLabel) scoreLabel.textContent = 'Best';
             const bestTime = this.zenBestTimes[this.round - 1];
             if (bestTime !== null) {
                 const bm = Math.floor(bestTime / 60);
@@ -318,6 +320,7 @@ class GameManager {
             }
             document.getElementById('round').textContent = `${this.round}/${ZEN_LEVELS.length}`;
         } else {
+            if (scoreLabel) scoreLabel.textContent = 'Score';
             timerEl.textContent = this.timeRemaining;
 
             // Update timer color based on urgency
