@@ -269,9 +269,11 @@ class GameManager {
                 }
             );
             if (res.ok) {
-                const arr = await res.json();
-                arr.forEach(e => { e.score = parseInt(e.score, 10) || 0; });
-                return arr;
+                const data = await res.json();
+                // Supabase may return an error object instead of an array
+                if (!Array.isArray(data)) return [];
+                data.forEach(e => { e.score = parseInt(e.score, 10) || 0; });
+                return data;
             }
         } catch (e) {
             console.error('Leaderboard fetch error:', e);
