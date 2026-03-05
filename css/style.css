@@ -57,7 +57,7 @@ body {
 
 /* ── Main Container ─────────────────────────────────────────── */
 #game-container {
-    width: 95vw;
+    width: calc(90vw / 0.54);
     max-width: none;
     background: var(--bg-dark);
     border: 4px solid var(--primary);
