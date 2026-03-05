@@ -348,20 +348,30 @@ class PZMapManager {
         ctx.setLineDash([]);
     }
 
-    drawPole(re, im, color) {
+    drawPole(re, im, color, isBest = false) {
         const ctx = this.ctx;
         const x = this.sToX(re);
         const y = this.sToY(im);
 
         ctx.strokeStyle = color;
-        ctx.lineWidth = 2;
+        ctx.lineWidth = isBest ? 3 : 2;
         ctx.beginPath();
-        // Draw a visible X marker
-        const size = 5;
-        ctx.moveTo(x - size, y - size);
-        ctx.lineTo(x + size, y + size);
-        ctx.moveTo(x - size, y + size);
-        ctx.lineTo(x + size, y - size);
+
+        if (isBest) {
+            // Draw a distinct + marker for best solution
+            const size = 6;
+            ctx.moveTo(x - size, y);
+            ctx.lineTo(x + size, y);
+            ctx.moveTo(x, y - size);
+            ctx.lineTo(x, y + size);
+        } else {
+            // Draw a standard X marker for user poles
+            const size = 5;
+            ctx.moveTo(x - size, y - size);
+            ctx.lineTo(x + size, y + size);
+            ctx.moveTo(x - size, y + size);
+            ctx.lineTo(x + size, y - size);
+        }
         ctx.stroke();
     }
 
@@ -387,16 +397,13 @@ class PZMapManager {
 
         // Draw best solution poles LAST (on top) so they're always visible
         if (showBest && bestSolutionStages) {
-            const origLW = this.ctx.lineWidth;
             for (const stage of bestSolutionStages) {
                 if (typeof stage.getPoles === 'function') {
                     for (const p of stage.getPoles()) {
-                        this.ctx.lineWidth = 3;
-                        this.drawPole(p.re, p.im, '#ff00ff');
+                        this.drawPole(p.re, p.im, '#ff00ff', true);
                     }
                 }
             }
-            this.ctx.lineWidth = origLW;
         }
     }
 }
