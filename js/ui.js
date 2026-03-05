@@ -703,14 +703,40 @@ class UIManager {
                 document.getElementById('challenge-start-popup').classList.add('hidden');
                 this.overlay.classList.add('hidden');
 
-                // Hide Skip button during normal Challenge
-                document.getElementById('btn-skip-level').style.display = 'none';
+                // Hide Prev/Next buttons during normal Challenge
+                const prevBtn = document.getElementById('btn-prev-level');
+                if (prevBtn) prevBtn.style.display = 'none';
+                const nextBtn = document.getElementById('btn-next-level');
+                if (nextBtn) nextBtn.style.display = 'none';
 
                 this.game.startChallenge('hardcore');
                 this.game.startRound();
                 audio.playClick();
             });
         }
+
+        // Secret code to skip level for Devs (Up, Up, Down, Down)
+        let secretCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown'];
+        let secretIndex = 0;
+        document.addEventListener('keydown', (e) => {
+            if (e.key === secretCode[secretIndex]) {
+                secretIndex++;
+                if (secretIndex === secretCode.length) {
+                    secretIndex = 0;
+                    console.log("Dev skip activated!");
+                    if (this.game.mode === 'challenge' && this.game.subMode === 'hardcore') {
+                        this.showVictory();
+                    } else if (this.game.mode === 'zen') {
+                        this.game.completeRound(this.cascade, () => { });
+                        const nextBtn = document.getElementById('btn-next-level');
+                        if (nextBtn && this.game.round < ZEN_LEVELS.length) nextBtn.disabled = false;
+                        this.game.updateHUD();
+                    }
+                }
+            } else {
+                secretIndex = 0;
+            }
+        });
 
         // Handle window resize for canvases
         window.addEventListener('resize', () => {
@@ -827,13 +853,13 @@ class UIManager {
 
             // Allow infinite scrolling, just scale the bounds dynamically
             let nextVal = param.value + delta;
-            if (!isF0) nextVal = Math.min(nextVal, 10.0);
+            if (!isF0) nextVal = Math.min(nextVal, 20.0);
 
             param.value = Math.max(0.01, nextVal); // Prevent ≤ 0
             param.autoRange();
 
-            if (!isF0 && param.max > 10.0) {
-                param.max = 10.0;
+            if (!isF0 && param.max > 20.0) {
+                param.max = 20.0;
             }
 
             // Keep slider in sync
